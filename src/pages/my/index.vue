@@ -20,28 +20,28 @@
       <ul class="list">
       <li class="list-box">
         <span class="icon collection"></span>
-        <div class="list-item">
+        <div class="list-item" @click="jumpTo('/pages/info/main')">
           个人信息
           <span class="icon more"/>
         </div>
       </li>
       <li class="list-box">
         <span class="icon about"></span>
-        <div class="list-item">
+        <div class="list-item" @click="jumpTo('/pages/coupon/main')">
           代金券
           <span class="icon more"/>
         </div>
       </li>
       <li class="list-box">
         <span class="icon about"></span>
-        <div class="list-item">
+        <div class="list-item" @click="jumpTo('/pages/order/main')">
           我的订单
           <span class="icon more"/>
         </div>
       </li>
       <li class="list-box">
         <span class="icon about"></span>
-        <div class="list-item">
+        <div class="list-item" @click="jumpTo('/pages/about/main')">
           关于
           <span class="icon more"/>
         </div>
@@ -50,6 +50,21 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+
+    }
+  },
+  methods: {
+    jumpTo (url) {
+      wx.navigateTo({url})
+    }
+  }
+}
+</script>
 
 <style scoped>
 
