@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-06-10 14:05:57
- * @LastEditTime: 2020-06-11 14:52:37
+ * @LastEditTime: 2020-06-11 17:53:55
  * @LastEditors: hecun
  * @Description: In User Settings Edit
  * @FilePath: \my-project\src\pages\my\index.vue
@@ -10,7 +10,7 @@
   <div>
     <div class="header">
       <div class="info-box">
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg" alt srcset />
+        <img src="http://static.hecun.site/hecun.321c947a.jpg" alt srcset />
         <div>
           <span class="info-name">hecun</span>
         </div>
@@ -19,16 +19,16 @@
     <div class="container-my">
       <ul class="list">
         <li class="list-box">
-          <span class="icon coupon"></span>
-          <div class="list-item" @click="jumpTo('/pages/coupon/main')">
-            代金券
+          <span class="icon order"></span>
+          <div class="list-item" @click="jumpTo('/pages/order/main')">
+            我的订单
             <span class="icon more" />
           </div>
         </li>
         <li class="list-box">
-          <span class="icon order"></span>
-          <div class="list-item" @click="jumpTo('/pages/order/main')">
-            我的订单
+          <span class="icon coupon"></span>
+          <div class="list-item" @click="jumpTo('/pages/coupon/main')">
+            代金券
             <span class="icon more" />
           </div>
         </li>
@@ -67,9 +67,17 @@ export default {
 <style scoped>
 .header {
   height: 320rpx;
-  background: #74ebd5;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #74ebd5; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #acb6e5,
+    #74ebd5
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #acb6e5,
+    #74ebd5
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   padding: 30rpx;
   display: flex;
