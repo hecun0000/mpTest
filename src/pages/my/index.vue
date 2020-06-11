@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-06-10 14:05:57
- * @LastEditTime: 2020-06-10 17:24:46
+ * @LastEditTime: 2020-06-11 14:52:37
  * @LastEditors: hecun
  * @Description: In User Settings Edit
  * @FilePath: \my-project\src\pages\my\index.vue
@@ -10,7 +10,7 @@
   <div>
     <div class="header">
       <div class="info-box">
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg" alt="" srcset="">
+        <img src="https://img.yzcdn.cn/vant/cat.jpeg" alt srcset />
         <div>
           <span class="info-name">hecun</span>
         </div>
@@ -18,35 +18,35 @@
     </div>
     <div class="container-my">
       <ul class="list">
-      <li class="list-box">
-        <span class="icon collection"></span>
-        <div class="list-item" @click="jumpTo('/pages/info/main')">
-          个人信息
-          <span class="icon more"/>
-        </div>
-      </li>
-      <li class="list-box">
-        <span class="icon about"></span>
-        <div class="list-item" @click="jumpTo('/pages/coupon/main')">
-          代金券
-          <span class="icon more"/>
-        </div>
-      </li>
-      <li class="list-box">
-        <span class="icon about"></span>
-        <div class="list-item" @click="jumpTo('/pages/order/main')">
-          我的订单
-          <span class="icon more"/>
-        </div>
-      </li>
-      <li class="list-box">
-        <span class="icon about"></span>
-        <div class="list-item" @click="jumpTo('/pages/about/main')">
-          关于
-          <span class="icon more"/>
-        </div>
-      </li>
-    </ul>
+        <li class="list-box">
+          <span class="icon coupon"></span>
+          <div class="list-item" @click="jumpTo('/pages/coupon/main')">
+            代金券
+            <span class="icon more" />
+          </div>
+        </li>
+        <li class="list-box">
+          <span class="icon order"></span>
+          <div class="list-item" @click="jumpTo('/pages/order/main')">
+            我的订单
+            <span class="icon more" />
+          </div>
+        </li>
+        <li class="list-box">
+          <span class="icon info"></span>
+          <div class="list-item" @click="jumpTo('/pages/info/main')">
+            个人信息
+            <span class="icon more" />
+          </div>
+        </li>
+        <li class="list-box">
+          <span class="icon about"></span>
+          <div class="list-item" @click="jumpTo('/pages/about/main')">
+            关于
+            <span class="icon more" />
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -55,7 +55,6 @@
 export default {
   data () {
     return {
-
     }
   },
   methods: {
@@ -65,21 +64,24 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-
 .header {
-  height: 300rpx;
-  background: linear-gradient(to top, #b6fbff, #83a4d4);
+  height: 320rpx;
+  background: #74ebd5;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   padding: 30rpx;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
 }
 
 .header img {
-  width: 120rpx;
-  height: 120rpx;
+  width: 160rpx;
+  height: 160rpx;
   border-radius: 50%;
+  margin-bottom: 20rpx;
 }
 
 .container-my {
@@ -88,18 +90,19 @@ export default {
 
 .info-name {
   padding: 0 20rpx;
-  color: #666;
-  font-size: 40rpx;
+  color: #fff;
+  font-size: 36rpx;
   font-weight: 400;
 }
 
 .info-box {
   display: flex;
   align-items: center;
+  flex-direction: column;
 }
 
 .list {
-  margin-top: 20rpx;
+  /* margin-top: 20rpx; */
   background: #fff;
   border-top: 1rpx solid #eee;
   border-bottom: 1rpx solid #eee;
@@ -117,7 +120,7 @@ export default {
   border-top: 1rpx solid #eee;
 }
 .list .list-item {
-  height: 100rpx;
+  height: 116rpx;
   flex: 1;
   display: flex;
   align-items: center;
@@ -129,17 +132,21 @@ export default {
 .list .more {
   background: url("../../../static/icon/more.png");
 }
-.list .collection {
-  background: url("../../../static/icon/collection.png");
+.list .info {
+  background: url("../../../static/icon/setting.png");
+}
+.list .coupon {
+  background: url("../../../static/icon/coupon-icon.png");
+}
+.list .order {
+  background: url("../../../static/icon/order.png");
 }
 .list .about {
-  background: url("../../../static/icon/about.png");
+  background: url("../../../static/icon/service.png");
 }
 .list .icon {
   width: 48rpx;
   height: 48rpx;
   background-size: 100%;
 }
-
-
 </style>
