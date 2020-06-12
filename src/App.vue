@@ -60,3 +60,8 @@ page {
   background: #f4f4f4;
 }
 </style>
+
+<style lang="less">
+    @import "./assets/stylesheets/common.less";
+    @import "./assets/stylesheets/iconfont.less";
+</style>

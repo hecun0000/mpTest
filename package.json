@@ -25,6 +25,9 @@
   },
   "dependencies": {
     "@vant/weapp": "^1.3.2",
+    "ldy-mpvue-wxparse": "^0.0.8",
+    "less": "^3.11.1",
+    "less-loader": "^4.1.0",
     "mpvue": "^2.0.0",
     "vuex": "^3.0.1"
   },
