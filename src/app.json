@@ -38,6 +38,7 @@
     "position": "bottom"
   },
   "usingComponents": {
+    "van-divider": "/static/vant/divider/index",
     "van-button": "/static/vant/button/index",
     "van-tag": "/static/vant/tag/index",
     "van-image": "/static/vant/image/index",

@@ -31,6 +31,7 @@
     
         <!--底部评价和详情-->
         <ProductPingJia/>
+        <van-divider contentPosition="center">活动详情</van-divider>
         <!-- <ProductFooter :content="article" :comment="commentList"></ProductFooter> -->
         <!-- <ProductPingJia /> -->
         <div style="padding: 24rpx">
