@@ -36,9 +36,15 @@
         <div style="padding: 24rpx">
             <wxParse :content="article" :imageProp="imageProp"></wxParse>
         </div>
-      
+     <van-goods-action>
+  <van-goods-action-icon icon="chat-o" text="客服" dot />
+  <van-goods-action-icon icon="shop-o" text="店铺" />
+  <van-goods-action-button text="加入购物车" type="warning" />
+  <van-goods-action-button text="立即购买" />
+</van-goods-action>
+<!--       
         <SkuSelector :attrList="attrList" :skuList="skuList" :goodsInfo="initGoodsInfo" ref="SkuSelector" @updateSkuInfo="updateSkuInfo"></SkuSelector>
-        <Mask :mask="mask" :goodsShareInfo="goodsShareInfo" :profile="profile"></Mask>
+        <Mask :mask="mask" :goodsShareInfo="goodsShareInfo" :profile="profile"></Mask> -->
     </div>
 </template>
 
@@ -66,7 +72,7 @@ export default {
   },
   mounted () {
     wx.setNavigationBarTitle({
-      title: '商品详情'
+      title: '活动详情'
     })
   },
   methods: {

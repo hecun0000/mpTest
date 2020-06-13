@@ -48,6 +48,9 @@
     "van-action-sheet": "/static/vant/action-sheet/index",
     "van-tab": "/static/vant/tab/index",
     "van-tabs": "/static/vant/tabs/index",
-    "van-card": "/static/vant/card/index"
+    "van-card": "/static/vant/card/index",
+    "van-goods-action": "/static/vant/goods-action/index",
+    "van-goods-action-icon": "/static/vant/goods-action-icon/index",
+    "van-goods-action-button": "/static/vant/goods-action-button/index"
   }
 }
