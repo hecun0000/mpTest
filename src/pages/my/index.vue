@@ -48,11 +48,17 @@
         </li>
       </ul>
     </div>
+    <Auth :showAuthModal="true"></Auth>
   </div>
 </template>
 
 <script>
-export default {
+import BasePlatPage from '@/utils/basePlatPage'
+import Auth from '@/components/NewAuth.vue'
+export default new BasePlatPage({
+  components: {
+    Auth
+  },
   data () {
     return {
     }
@@ -60,9 +66,43 @@ export default {
   methods: {
     jumpTo (url) {
       wx.navigateTo({url})
+    },
+    onGetUserInfo (e) {
+      // let self = this
+      let res = e.mp.detail
+      console.log(res)
+      // if (res.errMsg == 'getUserInfo:fail auth deny') {
+      //   console.info('auth deny')
+      //   // Event.emit(Event.AUTH_STATUS_CHANGE, -1)
+      //   return
+      // }
+      // if (res.errMsg == 'getUserInfo:ok') {
+      //   wx.showNavigationBarLoading()
+      //   saveUserBasicInfo({
+      //     mtoken: this.$store.state.extConfig.mtoken,
+      //     btoken: this.$store.state.extConfig.btoken,
+      //     encryptedData: res.encryptedData,
+      //     rawData: res.rawData,
+      //     iv: res.iv
+      //   }).then(res => {
+      //     wx.hideNavigationBarLoading()
+      //     if (res.success) {
+      //       // 获取用户信息
+      //       this.authTrue()
+      //     }
+      //   })
+      // }
     }
+  },
+  mounted () {
+    wx.setNavigationBarTitle({
+      title: '我的'
+    })
+  },
+  onLoad () {
+
   }
-}
+})
 </script>
 <style scoped>
 .header {

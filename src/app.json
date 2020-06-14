@@ -1,14 +1,17 @@
 {
   "pages": [
-    "pages/detail/main",
-    "pages/order/main",
     "pages/my/main",
+    "pages/detail/main",
+    "pages/palette/main",
+    "pages/home/main",
+    "pages/order/main",
     "pages/coupon/main",
     "pages/info/main",
     "pages/index/main",
     "pages/logs/main",
     "pages/counter/main",
-    "pages/about/main"
+    "pages/about/main",
+    "pages/forbidden/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -24,7 +27,7 @@
     "list": [
       {
         "text": "首页",
-        "pagePath": "pages/index/main",
+        "pagePath": "pages/home/main",
         "iconPath": "static/icon/home_d.png",
         "selectedIconPath": "static/icon/home.png"
       },
@@ -38,6 +41,11 @@
     "position": "bottom"
   },
   "usingComponents": {
+    "painter": "/static/painter/painter",
+    "van-overlay": "/static/vant/overlay/index",
+    "van-count-down": "/static/vant/count-down/index",
+    "van-popup": "/static/vant/popup/index",
+    "van-icon": "/static/vant/icon/index",
     "van-divider": "/static/vant/divider/index",
     "van-button": "/static/vant/button/index",
     "van-tag": "/static/vant/tag/index",

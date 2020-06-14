@@ -1,5 +1,9 @@
 <template>
   <div class="container">
+    <div class="share" @click="showShare">
+      <img class="icon" src="./images//share.png" alt="">
+                        <div class="text">分享</div>
+    </div>
         <swiper @change="swiperChange" indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true"
                 indicator-color="#D8D8D8" indicator-active-color="#E93C3E" :style="{height: (750)+'rpx'}">
             <swiper-item v-for="(item,index) in picture_array" :key="index">
@@ -7,11 +11,36 @@
             </swiper-item>
         </swiper>
 
+        <div class="mian-info">
+          <div class="left">
+            <div class="price">
+              ￥ <div class="price-num">99.00</div>
+            </div>
+            <div class="price-info">
+              <p class="price-origin">
+                ￥599.00
+              </p>
+              <div class="main-num">
+                <div class="num">2</div>
+                人拼
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="time-title">
+              距结束还剩
+            </div>
+            <div class="time">
+              <van-count-down :time="time" format="DD天HH:mm:ss" />
+            </div>
+          </div>
+        </div>
+
         <!--商品名称  经典模式-->
         <div class="base-info">
             <div class="tag">预约</div>
             <div class="title line-clamp-2">{{product_name}}</div>
-            <div class="func flex">
+            <!-- <div class="func flex">
                 <form report-submit="true" @submit.stop="collect">
                     <button class="collect" formType="submit">
                         <img class="icon" v-if="collectStatus == 2 " src="./images//collection.png" >
@@ -26,7 +55,7 @@
                     </button>
                 </form>
             </div>
-            <div class="price">￥{{price_current}}  <text style="text-decoration: line-through;margin-left: 20rpx;font-size: 30rpx;color: #999999">￥{{price_original}}</text></div>
+            <div class="price">￥{{price_current}}  <text style="text-decoration: line-through;margin-left: 20rpx;font-size: 30rpx;color: #999999">￥{{price_original}}</text></div> -->
         </div>
     
         <!--底部评价和详情-->
@@ -37,15 +66,16 @@
         <div style="padding: 24rpx">
             <wxParse :content="article" :imageProp="imageProp"></wxParse>
         </div>
-     <van-goods-action>
-  <van-goods-action-icon icon="chat-o" text="客服" dot />
-  <van-goods-action-icon icon="shop-o" text="店铺" />
-  <van-goods-action-button text="加入购物车" type="warning" />
-  <van-goods-action-button text="立即购买" />
-</van-goods-action>
+        <van-goods-action>
+          <van-goods-action-icon icon="chat-o" text="客服" dot />
+          <van-goods-action-icon icon="shop-o" text="店铺" />
+          <van-goods-action-button text="分享活动" type="warning" />
+          <van-goods-action-button text="支付定金" />
+        </van-goods-action>
 <!--       
         <SkuSelector :attrList="attrList" :skuList="skuList" :goodsInfo="initGoodsInfo" ref="SkuSelector" @updateSkuInfo="updateSkuInfo"></SkuSelector>
         <Mask :mask="mask" :goodsShareInfo="goodsShareInfo" :profile="profile"></Mask> -->
+        <share ref="share"></share>
     </div>
 </template>
 
@@ -53,15 +83,18 @@
 import wxParse from 'ldy-mpvue-wxparse'
 import ProductFooter from './ProductFooter'
 import ProductPingJia from './ProductPingJia'
+import share from './share'
 export default {
   components: {
     ProductFooter,
     wxParse,
-    ProductPingJia
+    ProductPingJia,
+    share
   },
 
   data () {
     return {
+      time: 30 * 60 * 60 * 1000,
       picture_array: [
         'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg',
         'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg'
@@ -77,7 +110,9 @@ export default {
     })
   },
   methods: {
-
+    showShare () {
+      this.$refs.share.onClickShow()
+    }
   }
 
 }
@@ -453,6 +488,97 @@ export default {
     margin-left:80rpx;
     height:100rpx;
 }
-
-
+.mian-info {
+  height:110rpx;
+  display: flex;
+  .left {
+    flex: 6;
+    background:linear-gradient(270deg,rgba(250,60,60,1) 0%,rgba(255,138,0,1) 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 20rpx;
+  }
+  .right {
+    flex: 4;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: #F7F7F7;
+  }
+  .price {
+    font-size:32rpx;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    line-height:45rpx;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-right: 16rpx;
+  }
+  .price-num {
+    font-size:60rpx;
+    font-weight:bold;
+    color:rgba(255,255,255,1);
+    line-height:70rpx;
+  }
+  .price-info {
+    font-size:24rpx;
+    font-weight:400;
+    color:rgba(255,255,255,1);
+    line-height:33rpx;
+  }
+  .price-origin {
+    color: #FEC8AA;
+    text-decoration:line-through;
+  }
+  .main-num {
+    margin-left: 10rpx;
+    height:40rpx;
+    border-radius:8rpx;
+    border:2rpx solid rgba(255,255,255,1);
+    display: flex;
+    margin-top: 6rpx;
+    .num {
+      background: #fff;
+      color: #FA4338;
+      padding: 0 10rpx;
+    }
+  }
+}
+.time-title {
+  font-size:22rpx;
+  font-weight:400;
+  color:rgba(34,34,34,1);
+  line-height:30rpx;
+}
+.time {
+  color: #FD1717;
+  margin-top: 10rpx;
+  // font-size:22rpx;
+}
+.share {
+  position: fixed;
+  right: 0;
+  top: 20vh;
+  border-radius: 30rpx 0 0 30rpx;
+  background: #FF4C1B;
+  z-index: 1000;
+  padding: 10rpx 16rpx 10rpx 30rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 28rpx;
+  transition: all .2s;
+  .icon {
+    height: 34rpx;
+    width: 34rpx;
+    filter: brightness(1000);
+  }
+  &:hover {
+    opacity: .7;
+  }
+}
 </style>

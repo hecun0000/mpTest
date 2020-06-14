@@ -1,31 +1,168 @@
 <template>
-    <div class='footer'>
-      <div class="title-box">
-        <div class="left">
-          评价
-        </div>
-        <div class="info">
-          共300+条评论
-        </div>
+  <div class="footer">
+    <div class="title-box">
+      <div class="left">评价</div>
+      <div class="info" @click="showPopup">
+        共300+条评论
+        <van-icon name="arrow" />
       </div>
-        <!-- <div class="nav flex">
-            <div class="nav-item" :class="{ active : activeTab === 'details' }" @click.stop="switchTab('details')">商品详情</div>
-            <div class="nav-item" :class="{ active : activeTab === 'evaluate' }" @click.stop="switchTab('evaluate')">商品评价</div>
-        </div>
-        <div class="content">
-            <ProductDetails :content="content" v-if="activeTab === 'details'"></ProductDetails>
-            <block v-if="activeTab == 'evaluate'">
-                <block v-if="comment.length"  v-for="(item, index) in comment" :key="index">
-                    <Comment :commentInfo="item" v-if="activeTab === 'evaluate'"></Comment>
-                </block>
-                <block v-if="!comment.length">
-                    <img class="comment-img" src="/static/common/coment-img.png" alt="">
-                    <div class="text">还没有评价，等你来评论~</div>
-                </block>
-            </block>
-        </div> -->
-
     </div>
+
+    <ul class="ask-box">
+      <li class="item">
+        <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+        <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+      </li>
+      <li class="item">
+        <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+        <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+      </li>
+      <li class="item">
+        <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+        <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+      </li>
+    </ul>
+
+    <van-popup :show="show" closeable position="bottom" @close="onClose">
+      <div class="pop-box">
+        <p class="pop-title">活动评价</p>
+        <ul class="ask-box ask-box-pop">
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+          <li class="item">
+            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
+            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          </li>
+        </ul>
+      </div>
+    </van-popup>
+  </div>
 </template>
 
 <script>
@@ -41,21 +178,19 @@ export default {
   props: ['content', 'comment'],
   data () {
     return {
-      activeTab: 'details'
+      show: false
     }
   },
   methods: {
-    switchTab (item) {
-      if (this.activeTab === item) return
-      this.activeTab = item
+    onClose () {
+      this.show = false
+    },
+    showPopup () {
+      this.show = true
     }
   },
-  onLoad () {
-    this.activeTab = 'details'
-  },
-  mounted () {
-
-  },
+  onLoad () {},
+  mounted () {},
   watch: {
     activeTab (newVal) {
       this.$emit('changeActiveTab', newVal)
@@ -72,58 +207,87 @@ export default {
   background: #fff;
   justify-content: space-between;
   padding: 30rpx 24rpx;
-  border-bottom: 1px solid #E8E8E8;
+  border-bottom: 1px solid #e8e8e8;
   .left {
-    font-size:30rpx;
-    color:rgba(51,51,51,1);
-    line-height:42rpx;
+    font-size: 30rpx;
+    color: rgba(51, 51, 51, 1);
+    line-height: 42rpx;
   }
   .info {
-    font-size:26rpx;
-    font-weight:400;
-    color:rgba(184,184,184,1);
-    line-height:37rpx;
+    font-size: 26rpx;
+    font-weight: 400;
+    color: rgba(184, 184, 184, 1);
+    line-height: 37rpx;
   }
 }
-    .nav {
-        font-size: 30rpx;
-        width: 640rpx;
-        margin: 30rpx auto;
-        border-radius: 40rpx;
-        .nav-item {
-            text-align: center;
-            font-size: 30rpx;
-            flex: 1;
-            padding: 20rpx 0;
-            &:nth-of-type(1){
-                border: 1px solid #E8E8E8;
-                border-radius: 40rpx 0 0 40rpx;
-                border-right: 0;
-            }
-            &:nth-of-type(2){
-                border: 1px solid #E8E8E8;
-                border-radius: 0 40rpx 40rpx 0;
-                border-left: 0;
-            }
-            &.active {
-                color: #fff;
-                background: #FFBC00;
-                border: 1px solid #FFBC00;
-            }
-        }
+.nav {
+  font-size: 30rpx;
+  width: 640rpx;
+  margin: 30rpx auto;
+  border-radius: 40rpx;
+  .nav-item {
+    text-align: center;
+    font-size: 30rpx;
+    flex: 1;
+    padding: 20rpx 0;
+    &:nth-of-type(1) {
+      border: 1px solid #e8e8e8;
+      border-radius: 40rpx 0 0 40rpx;
+      border-right: 0;
     }
-    .content{
-        padding: 20rpx;
+    &:nth-of-type(2) {
+      border: 1px solid #e8e8e8;
+      border-radius: 0 40rpx 40rpx 0;
+      border-left: 0;
     }
-    .comment-img{
-        width: 200rpx;
-        height: 200rpx;
-        margin: 20rpx auto;
+    &.active {
+      color: #fff;
+      background: #ffbc00;
+      border: 1px solid #ffbc00;
     }
-    .text{
-        font-size: 26rpx;
-        text-align: center;
-        margin-top: 20rpx;
-        color: #999;
-    }
+  }
+}
+.content {
+  padding: 20rpx;
+}
+.comment-img {
+  width: 200rpx;
+  height: 200rpx;
+  margin: 20rpx auto;
+}
+.text {
+  font-size: 26rpx;
+  text-align: center;
+  margin-top: 20rpx;
+  color: #999;
+}
+.ask-box {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  .item {
+    padding: 0 20rpx;
+    border-bottom: 1rpx solid #f2f2f2;
+  }
+  .ask-title {
+    font-size: 30rpx;
+    font-weight: 400;
+    color: rgba(51, 51, 51, 1);
+    line-height: 70rpx;
+  }
+  .ask-info {
+    font-size: 26rpx;
+    color: rgb(70, 70, 70);
+    line-height: 60rpx;
+  }
+}
+.ask-box-pop {
+  height: 60vh;
+  overflow: auto;
+}
+.pop-title {
+  padding: 10rpx 20rpx;
+  font-size: 36rpx;
+  line-height: 60rpx;
+}
 </style>
