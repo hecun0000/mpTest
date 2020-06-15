@@ -48,7 +48,7 @@
         </li>
       </ul>
     </div>
-    <Auth :showAuthModal="true"></Auth>
+    <Auth></Auth>
   </div>
 </template>
 

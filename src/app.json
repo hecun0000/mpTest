@@ -1,5 +1,7 @@
 {
   "pages": [
+    "pages/help/main",
+    "pages/groupInfo/main",
     "pages/my/main",
     "pages/detail/main",
     "pages/palette/main",
