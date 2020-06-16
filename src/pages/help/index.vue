@@ -8,7 +8,8 @@
 --> 
 <template>
   <div>   
-    <!-- <Auth></Auth> -->
+
+    
   </div>
 </template>
 
