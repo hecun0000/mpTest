@@ -41,7 +41,6 @@
     "position": "bottom"
   },
   "usingComponents": {
-    "painter": "/static/painter/painter",
     "van-overlay": "/static/vant/overlay/index",
     "van-count-down": "/static/vant/count-down/index",
     "van-popup": "/static/vant/popup/index",
