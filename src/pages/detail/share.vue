@@ -17,22 +17,27 @@
 export default {
   data () {
     return {
+      canvas: null,
       width: 0,
       height: 0,
       ctxWidth: null,
       ctxHeight: null,
       show: false,
       imgUrl: '',
+      dpr: 0,
       info: {
-        title: '初秋新款德瑞毛茸高跟鞋标题标题标题标题标题可爱可爱可爱可爱可标题标题标题标题可爱可爱可标题标题标题标题可爱可爱可标题标题标题标题可爱可爱可爱 …',
+        title: '兰蔻大粉水新清滢柔肤水化妆品套装护肤化妆水爽肤水补水保湿超级盒子',
         url: 'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg'
       }
     }
   },
-  onload () {
+  mounted () {
     const res = wx.getSystemInfoSync()
     this.windowWidth = res.windowWidth
     this.windowHeight = res.windowHeight
+    this.dpr = wx.getSystemInfoSync().pixelRatio
+    console.log(this.dpr, 'this.dpr')
+    this.init()
   },
   methods: {
     toPX (px) {
@@ -53,45 +58,43 @@ export default {
       query.select('#ctx')
         .fields({ node: true, size: true })
         .exec((res) => {
-          console.log(res, 'res 2d')
           const canvas = res[0].node
-          const dpr = wx.getSystemInfoSync().pixelRatio
           // 新接口需显示设置画布宽高；
-          const width = res[0].width * dpr
-          const height = res[0].height * dpr
+          self.dpr = wx.getSystemInfoSync().pixelRatio
+          const width = res[0].width * self.dpr
+          const height = res[0].height * self.dpr
+          console.log(width, height, res[0], self.dpr)
           self.width = width
           self.height = width
           canvas.width = width
           canvas.height = height
+          self.canvas = canvas
+
           const ctx = canvas.getContext('2d')
           ctx.fillStyle = '#ffffff'
           ctx.fillRect(0, 0, width, height)
-          // ctx.font = '100px Georgia'
-          // ctx.fillText('Hello World!', 10, 50)
+
           self.drawImg(ctx, canvas)
           self.drawTitle(ctx)
-          self.canvasToImg(canvas)
+          console.log(ctx)
         })
     },
     drawImg (ctx, canvas) {
-      const that = this
+      const self = this
       wx.downloadFile({
         url: this.info.url,
         success: function (res) {
           let img = canvas.createImage()
           img.onload = e => {
-            const padding = 40
-            ctx.drawImage(img, padding, padding, that.width - padding * 2, that.width - padding * 2)
+            const padding = 20
+            ctx.drawImage(img, padding, padding, self.width - padding * self.dpr, self.width - padding * self.dpr)
           }
           img.src = res.tempFilePath
         }
       })
     },
     drawTitle (ctx) {
-      // ctx.font = '100px Verdana'
-      // ctx.fillText('禾寸', 80, 1210)
-      const fontSize = 20 * 2
-      // console.log(ctx, 'ctx')
+      const fontSize = 14 * this.dpr
       ctx.font = fontSize + 'px Verdana'
       ctx.fillStyle = '#000000'
       const str = this.info.title
@@ -102,63 +105,33 @@ export default {
         var a = str.slice(size * i, size * (i + 1))
         strArr.push(a)
       }
-      console.log(strArr, 'strArr')
-      let textTop = 1140
+      let textTop = this.width + 20
       for (let j = 0; j < 2; j++) {
         console.log(str, strArr[j], textTop, 'ress')
-        ctx.fillText(strArr[j], 40, textTop)
-        textTop += 60
+        ctx.fillText(strArr[j], 10 * this.dpr, textTop)
+        textTop += fontSize * 1.5
       }
-      // ctx.draw()
     },
     drawUser (ctx) {
     },
-    canvasToImg (canvas) {
-      console.log('dddddddddddddddddddd图片已保存到相册，赶紧晒 canvas')
-      const self = this
-      setTimeout(() => {
-        // 将生成的canvas图片，转为真实图片
-        wx.canvasToTempFilePath({
-          x: 0,
-          y: 0,
-          canvas,
-          success: function (res) {
-            console.log(res)
-            self.imgUrl = res.tempFilePath
-            // let shareImg = res.tempFilePath
-            // that.setData({
-            //   shareImg: shareImg,
-            //   showModal: true,
-            //   showShareModal: false
-            // })
-            // wx.hideLoading()
-          },
-          fail: function (res) {
-          }
-        })
-      }, 500)
-    },
     downloadImg () {
-      var self = this
-      console.log(self.imgUrl)
-      wx.saveImageToPhotosAlbum({
-        filePath: self.imgUrl,
-        success (res) {
-          console.log(res, 'dddddddddddddddddddd图片已保存到相册，赶紧晒')
-          wx.showModal({
-            content: '图片已保存到相册，赶紧晒一下吧~',
-            showCancel: false,
-            confirmText: '好的',
-            confirmColor: '#333',
-            success: function (res) {
-              if (res.confirm) {
-                console.log('用户点击确定')
-              }
-            },
-            fail: function (res) {
-              console.log(res)
+      const canvas = this.canvas
+      const self = this
+      wx.canvasToTempFilePath({
+        x: 0,
+        y: 0,
+        canvas,
+        success: function (res) {
+          console.log(res)
+          self.imgUrl = res.tempFilePath
+          wx.saveImageToPhotosAlbum({
+            filePath: self.imgUrl,
+            success (res) {
+              console.log(res, '图片已保存到相册，赶紧晒')
             }
           })
+        },
+        fail: function (res) {
         }
       })
     }
