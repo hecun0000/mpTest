@@ -6,13 +6,14 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+    sessionKey: '',
     envVersion: 'develop',
     version: '',
     newVersion: 'v2.0.0', // 当前最新版本
     // api域名
-    baseURL: 'http://server.natappfree.cc:37492/',
+    baseURL: 'http://42s3hc.natappfree.cc/',
     // baseURL: 'https://api.store.ledianyun.com/',
-    domain: 'http://server.natappfree.cc:37492/',
+    domain: 'http://42s3hc.natappfree.cc/',
     // domain: 'https://api.ledianyun.com/',
     // 用户信息
     checkTime: {},
@@ -20,7 +21,9 @@ const store = new Vuex.Store({
       balance: '',
       level: '',
       point: '',
-      level_name: ''
+      level_name: '',
+      avatar: '',
+      nickName: ''
     },
     // 收藏信息
     collect_info: '',

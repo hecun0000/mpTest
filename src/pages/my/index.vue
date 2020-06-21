@@ -10,9 +10,13 @@
   <div>
     <div class="header">
       <div class="info-box">
-        <img src="http://static.hecun.site/hecun.321c947a.jpg" alt srcset />
+        <!-- <img :src="Store.state.userInfo.avatar?Store.state.userInfo.avatar:'http://static.hecun.site/hecun.321c947a.jpg'" alt srcset /> -->
+        <open-data class="avatar-icon" type="userAvatarUrl"></open-data>
         <div>
-          <span class="info-name">hecun</span>
+          <span class="info-name">
+            <open-data class="nickName" type="userNickName"></open-data>
+            <!-- {{Store.state.userInfo.nickName?Store.state.userInfo.nickName:'http://static.hecun.site/hecun.321c947a.jpg'}} -->
+            </span>
         </div>
       </div>
     </div>
@@ -55,43 +59,19 @@
 <script>
 import BasePlatPage from '@/utils/basePlatPage'
 import Auth from '@/components/NewAuth.vue'
+// import Store from '@/store'
 export default new BasePlatPage({
   components: {
     Auth
   },
   data () {
     return {
+      // Store
     }
   },
   methods: {
     jumpTo (url) {
       wx.navigateTo({url})
-    },
-    onGetUserInfo (e) {
-      // let self = this
-      let res = e.mp.detail
-      console.log(res)
-      // if (res.errMsg == 'getUserInfo:fail auth deny') {
-      //   console.info('auth deny')
-      //   // Event.emit(Event.AUTH_STATUS_CHANGE, -1)
-      //   return
-      // }
-      // if (res.errMsg == 'getUserInfo:ok') {
-      //   wx.showNavigationBarLoading()
-      //   saveUserBasicInfo({
-      //     mtoken: this.$store.state.extConfig.mtoken,
-      //     btoken: this.$store.state.extConfig.btoken,
-      //     encryptedData: res.encryptedData,
-      //     rawData: res.rawData,
-      //     iv: res.iv
-      //   }).then(res => {
-      //     wx.hideNavigationBarLoading()
-      //     if (res.success) {
-      //       // 获取用户信息
-      //       this.authTrue()
-      //     }
-      //   })
-      // }
     }
   },
   mounted () {
@@ -125,7 +105,7 @@ export default new BasePlatPage({
   justify-content: center;
 }
 
-.header img {
+.header .avatar-icon {
   width: 160rpx;
   height: 160rpx;
   border-radius: 50%;
