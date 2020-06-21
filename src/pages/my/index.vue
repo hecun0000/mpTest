@@ -110,6 +110,7 @@ export default new BasePlatPage({
   height: 160rpx;
   border-radius: 50%;
   margin-bottom: 20rpx;
+  overflow: hidden;
 }
 
 .container-my {
