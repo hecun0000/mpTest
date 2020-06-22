@@ -27,3 +27,7 @@ export function bindPhone (data) {
 export function sendVerfiyCode (data) {
   return fly.post('api/wechatAuth/phone/send', Object.assign(common, data, scene))
 }
+
+export function getUserInfo (data) {
+  return fly.get('wx/user/info', data)
+}

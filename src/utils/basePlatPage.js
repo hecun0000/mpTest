@@ -34,18 +34,18 @@ export default class basePlatPage {
         console.log(1211111)
         let _onLoad = pageObj.onLoad
         pageObj.onLoad = async function (options) {
-          await basePlatPage.wait()
+          // await basePlatPage.wait()
 
           // await basePlatPage.checkAuth();
-          if (!store.state.authInfo.token) return
+          // if (!store.state.authInfo.token) return
 
-          await basePlatPage.sysTabBarDetail()
+          // await basePlatPage.sysTabBarDetail()
 
-          if (!this.alias) {
-            this.pageAlias = options.alias
-          }
+          // if (!this.alias) {
+          //   this.pageAlias = options.alias
+          // }
 
-          basePlatPage.initPage(pageObj.title)
+          // basePlatPage.initPage(pageObj.title)
 
           // 获取分享
           // if (!store.state.storeShareInfo.isRequest) {

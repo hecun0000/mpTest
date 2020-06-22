@@ -18,6 +18,8 @@
     // import { saveUserBasicInfo } from '@/api/wechatAuth'
 import Event from '@/utils/notice/Event'
 import BaseComponent from '@/utils/baseComponent'
+import { getUserInfo } from '@/api/user'
+import store from '@/store'
 export default new BaseComponent({
       name: 'Auth',
       data () {
@@ -35,27 +37,21 @@ export default new BaseComponent({
             Event.emit(Event.AUTH_STATUS_CHANGE, -1)
             return
           }
+          console.log(res)
           if (res.errMsg === 'getUserInfo:ok') {
             wx.showNavigationBarLoading()
             this.showAuthModal = false
-            // saveUserBasicInfo({
-            //   mtoken: this.$store.state.extConfig.mtoken,
-            //   btoken: this.$store.state.extConfig.btoken,
-            //   encryptedData: res.encryptedData,
-            //   rawData: res.rawData,
-            //   iv: res.iv
-            // }).then(res => {
-            //   wx.hideNavigationBarLoading()
-            //   this.showAuthModal = false
-            //   if (res.success) {
-            //     // 获取用户信息
-            //     let userInfo = self.$store.state.userInfo
-            //     if (!userInfo.utoken) { //
-
-            //     }
-            //   }
-            //   Event.emit(Event.AUTH_STATUS_CHANGE, 1)
-            // })
+            getUserInfo({
+              sessionKey: store.state.sessionKey,
+              signature: res.signature,
+              rawData: res.rawData,
+              encryptedData: res.encryptedData,
+              iv: res.iv
+            }).then(res => {
+              console.log(res, 'ddddddd')
+              // store.state.userInfo.avatar = res.avatarUrl
+              // store.state.userInfo.nickName = res.nickName
+            })
           }
         },
         checkUserAuth () {

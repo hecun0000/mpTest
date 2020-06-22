@@ -22,6 +22,9 @@ const mutations = {
     state.cartList[payload.index].sku_id = payload.sku_id
     state.cartList[payload.index].count = payload.count
     state.cartList[payload.index].price = payload.price
+  },
+  sessionKey (state, key) {
+    state.sessionKey = key
   }
 }
 

@@ -29,22 +29,13 @@ export default class auth {
           success: res => {
             let code = res.code
             console.log(res, res.code, 'ddddd')
-            fly.get(`${Store.state.domain}wx/user/wx13fc746a81a30a6b/login`, {
+            fly.get(`${Store.state.domain}wx/user/login`, {
               code: code
             }).then(response => {
-              console.log('login', 'wx13fc746a81a30a6b/login')
               wx.hideLoading()
-              let res = response.data.data
-              console.log(res, 'res', response)
-              if (res && res.authorize) {
-                Store.state.authInfo = res.authorize
-                wx.setStorageSync('authInfo', res.authorize)
-                auth.isLiting = false
-                resolve(true)
-              } else {
-                auth.isLiting = false
-                resolve(false)
-              }
+              const res = response.data.data
+              Store.state.sessionKey = res
+              resolve(true)
             })
           },
           fail: res => {
