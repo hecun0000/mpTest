@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-06-10 14:05:57
- * @LastEditTime: 2020-06-13 09:20:13
+ * @LastEditTime: 2020-06-22 08:50:57
  * @LastEditors: hecun
  * @Description: In User Settings Edit
  * @FilePath: \my-project\src\pages\my\index.vue
@@ -43,13 +43,13 @@
             <span class="icon more" />
           </div>
         </li>
-        <li class="list-box">
+        <!-- <li class="list-box">
           <span class="icon about"></span>
           <div class="list-item" @click="jumpTo('/pages/about/main')">
             关于
             <span class="icon more" />
           </div>
-        </li>
+        </li> -->
       </ul>
     </div>
     <Auth></Auth>

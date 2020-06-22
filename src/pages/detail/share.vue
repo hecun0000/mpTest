@@ -16,7 +16,6 @@
 <script>
 import { getQrCode } from '@/api/qr'
 import store from '@/store'
-
 export default {
   data () {
     return {
@@ -86,17 +85,14 @@ export default {
           self.dpr = wx.getSystemInfoSync().pixelRatio
           const width = res[0].width * self.dpr
           const height = res[0].height * self.dpr
-
           self.width = width
           self.height = height
           canvas.width = width
           canvas.height = height
           self.canvas = canvas
-
           const ctx = canvas.getContext('2d')
           ctx.fillStyle = '#ffffff'
           ctx.fillRect(0, 0, width, height)
-
           self.drawImg(ctx, canvas)
           self.drawTitle(ctx)
           self.drawQR(ctx, canvas)
@@ -137,7 +133,6 @@ export default {
         }
       })
     },
-
     drawAvatar (ctx, canvas) {
       let img = canvas.createImage()
       img.onload = e => {
@@ -151,7 +146,6 @@ export default {
       }
       img.src = this.avatarFilePath
     },
-
     drawQR (ctx, canvas) {
       let img = canvas.createImage()
       img.onload = e => {
@@ -164,7 +158,6 @@ export default {
       }
       img.src = this.qrFilePath
     },
-
     drawTitle (ctx) {
       const fontSize = 14 * this.dpr
       ctx.font = fontSize + 'px Verdana'
