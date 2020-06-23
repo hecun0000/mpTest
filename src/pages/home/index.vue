@@ -1,9 +1,9 @@
 <template>
   <div class="list-page">
     <ul class="list">
-      <li class="item" v-for="(item, index) in 4" :key="index" @click="jumpTo(item)">
+      <li class="item" v-for="(item, index) in listData" :key="index" @click="jumpTo(item)">
         <img src="http://static.hecun.site/hecun159210240836740.png" class="cover" alt srcset />
-        <p class="title">菏泽特产100%纯牡丹籽油一级冷榨健康食用油天然无添加高档礼盒装高档礼…</p>
+        <p class="title">{{ item.title }}</p>
       </li>
     </ul>
   </div>
@@ -11,10 +11,13 @@
 
 <script>
 import card from '@/components/card'
+import { getAtivity } from '@/api/activity'
 
 export default {
   data () {
-    return {}
+    return {
+      listData: []
+    }
   },
 
   components: {
@@ -22,14 +25,21 @@ export default {
   },
 
   methods: {
-    jumpTo () {
-      wx.navigateTo({url: '/pages/detail/main'})
+    async getList () {
+      const res = await getAtivity()
+      if (res.code === 200) {
+        this.listData = res.data
+      }
+    },
+    jumpTo ({id}) {
+      wx.navigateTo({url: '/pages/detail/main?id=' + id})
     }
   },
   mounted () {
     wx.setNavigationBarTitle({
       title: '首页'
     })
+    this.getList()
   },
   created () {}
 }
