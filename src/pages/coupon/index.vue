@@ -1,10 +1,10 @@
 <!--
  * @Author: your name
  * @Date: 2020-06-10 14:05:57
- * @LastEditTime: 2020-06-10 17:24:46
+ * @LastEditTime: 2020-06-24 09:39:25
  * @LastEditors: hecun
  * @Description: In User Settings Edit
- * @FilePath: \my-project\src\pages\my\index.vue
+ * @FilePath: \my-project\src\pages\coupon\index.vue
 --> 
 <template>
   <div class="coupon-list">
