@@ -64,4 +64,5 @@ page {
 <style lang="less">
     @import "./assets/stylesheets/common.less";
     @import "./assets/stylesheets/iconfont.less";
+    @import "./assets/stylesheets/ql-editor.less";
 </style>

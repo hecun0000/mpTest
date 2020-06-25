@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { getCoupon } from '@/api/coupon'
 export default {
   data () {
     return {
@@ -74,6 +75,12 @@ export default {
     })
   },
   methods: {
+    async getList () {
+      const res = await getCoupon()
+      if (res.code === 200) {
+        // this.couponList = res.data
+      }
+    },
     jumpTo (url) {
       wx.navigateTo({ url })
     }

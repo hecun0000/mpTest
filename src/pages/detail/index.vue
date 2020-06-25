@@ -63,19 +63,20 @@
         <van-divider contentPosition="center">活动详情</van-divider>
         <!-- <ProductFooter :content="article" :comment="commentList"></ProductFooter> -->
         <!-- <ProductPingJia /> -->
-        <div style="padding: 24rpx">
+        <div style="padding: 24rpx; background:#fff;">
             <wxParse :content="article" :imageProp="imageProp"></wxParse>
         </div>
         <van-goods-action>
           <van-goods-action-icon icon="chat-o" text="客服" dot />
           <van-goods-action-icon icon="shop-o" text="店铺" />
-          <van-goods-action-button text="分享活动" type="warning" />
+          <van-goods-action-button text="分享活动" type="warning" @click="handleShare"/>
           <van-goods-action-button text="支付定金" />
         </van-goods-action>
 <!--       
         <SkuSelector :attrList="attrList" :skuList="skuList" :goodsInfo="initGoodsInfo" ref="SkuSelector" @updateSkuInfo="updateSkuInfo"></SkuSelector>
         <Mask :mask="mask" :goodsShareInfo="goodsShareInfo" :profile="profile"></Mask> -->
         <share ref="share"></share>
+        <h-dialog ref="dialog"/>
     </div>
 </template>
 
@@ -83,17 +84,24 @@
 import wxParse from 'ldy-mpvue-wxparse'
 import ProductFooter from './ProductFooter'
 import ProductPingJia from './ProductPingJia'
+import HDialog from './dialog'
 import share from './share'
 export default {
   components: {
     ProductFooter,
     wxParse,
     ProductPingJia,
+    HDialog,
     share
   },
 
   data () {
     return {
+      article: '<p>弄丢了开发商方积分打扫房间</p><p><br></p><p>对方是否了第三款fd是否</p><p> dfs</p><p><br></p><p><br></p><p>范德萨发懒得说开发第三方了</p><p><br></p><p>fdslf  房贷释放了</p><p><br></p><p><span style="color: rgb(178, 178, 0);">抗衰老的防腐剂</span></p><p><br></p><ol><li class="ql-indent-1">范德萨范德萨<span style="color: rgb(255, 235, 204);"><span class="ql-cursor">﻿</span></span></li><li>范德萨范德萨发</li><li>fdsf d第三方</li></ol><p>范德萨范德萨发</p><p>范德萨发</p><p><br></p><p><br></p><p>对方是否范德萨范德萨</p><p><strong> 刻录机第三方</strong></p><p><br></p><p>的司法鉴定所</p><p><br></p><p>放电视了付款‘</p><p><br></p><p>了开发商的’</p> ',
+      imageProp: {
+        mode: 'widthFix',
+        lazyLoad: true
+      },
       time: 30 * 60 * 60 * 1000,
       picture_array: [
         'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg',
@@ -110,6 +118,10 @@ export default {
     })
   },
   methods: {
+    handleShare () {
+      // this.$refs.dialog.onOpen()
+      wx.navigateTo({url: '/pages/info/main'})
+    },
     showShare () {
       this.$refs.share.onClickShow()
     }

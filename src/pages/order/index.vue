@@ -25,27 +25,16 @@
           :thumb="imageURL"
         ></van-card>
       </div>
-      <div class="order-item">
-        <van-card
-          custom-class="no-tag"
-          tag="已取消"
-          price="2.00"
-          origin-price="10.00"
-          desc="描述信息"
-          title="2018秋冬新款男士休闲时尚军绿飞行夹克秋冬新款男"
-          :thumb="imageURL"
-        >
-          <view slot="footer">2020-06-06 21:00:00</view>
-        </van-card>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getOrder } from '@/api/order'
 export default {
   data () {
     return {
+      list: [''],
       imageURL:
         'https://img.yzcdn.cn/upload_files/2017/07/02/af5b9f44deaeb68000d7e4a711160c53.jpg'
     }
@@ -56,6 +45,12 @@ export default {
     })
   },
   methods: {
+    async getList () {
+      const res = await getOrder()
+      if (res.code === 200) {
+        // this.list = res.data
+      }
+    },
     jumpTo (url) {
       wx.navigateTo({ url })
     }

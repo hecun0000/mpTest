@@ -43,6 +43,13 @@
             <span class="icon more" />
           </div>
         </li>
+        <li class="list-box">
+          <span class="icon shop"></span>
+          <div class="list-item" @click="jumpTo('/pages/shop/main')">
+            我的活动
+            <span class="icon more" />
+          </div>
+        </li>
         <!-- <li class="list-box">
           <span class="icon about"></span>
           <div class="list-item" @click="jumpTo('/pages/about/main')">
@@ -172,6 +179,9 @@ export default new BasePlatPage({
 }
 .list .about {
   background: url("../../../static/icon/service.png");
+}
+.list .shop {
+  background: url("../../../static/icon/shop.png");
 }
 .list .icon {
   width: 48rpx;

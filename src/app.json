@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/home/main",
+    "pages/shop/main",
+    "pages/share/main",
     "pages/my/main",
     "pages/detail/main",
     "pages/help/main",
@@ -43,6 +45,7 @@
     "position": "bottom"
   },
   "usingComponents": {
+    "van-dialog": "/static/vant/dialog/index",
     "van-overlay": "/static/vant/overlay/index",
     "van-count-down": "/static/vant/count-down/index",
     "van-popup": "/static/vant/popup/index",

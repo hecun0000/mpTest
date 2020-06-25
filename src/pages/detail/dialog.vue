@@ -1,4 +1,13 @@
 <template>
+  <van-dialog
+  use-slot
+  title="完善个人信息"
+  :show="show"
+  show-cancel-button
+  confirm-button-open-type="getUserInfo"
+  @close="onClose"
+  @getuserinfo="getUserInfo"
+>
   <div>
     <van-cell-group>
       <van-field
@@ -26,9 +35,9 @@
         @click="onChangeSex"
       />
       <van-action-sheet
-        :show="show"
+        :show="showSelect"
         :actions="actions"
-        @close="onClose"
+        @close="onCloseSelect"
         @select="onSelect"
         cancel-text="取消"
       />
@@ -49,17 +58,15 @@
         cancel-text="取消"
       />
     </van-cell-group>
-    <div class="save-button">
-      <van-button type="primary" @click="handleSave" block>保存</van-button>
-    </div>
   </div>
+</van-dialog>
 </template>
-
 <script>
 import { getUserInfo, setUserInfo } from '@/api/info'
 export default {
   data () {
     return {
+      show: true,
       error: {
         name: '',
         phone: '',
@@ -72,7 +79,7 @@ export default {
         sex: '',
         grade: ''
       },
-      show: false,
+      showSelect: false,
       showoGrade: false,
       actionsGrade: [
         { name: '一年级' },
@@ -95,12 +102,16 @@ export default {
       ]
     }
   },
-  mounted () {
-    wx.setNavigationBarTitle({
-      title: '个人信息'
-    })
-  },
   methods: {
+    getUserInfo (event) {
+      console.log(event.detail)
+    },
+    onOpen () {
+      this.show = true
+    },
+    onClose () {
+      this.setData({ close: false })
+    },
     valiate () {
       let result = true
       if (!this.form.name) {
@@ -147,7 +158,7 @@ export default {
       const res = await setUserInfo(data)
 
       if (res.code === 200) {
-        // wx.navigateTo({ url: '/page/my/main' })
+        wx.navigateTo({ url: '/page/my/main' })
       }
     },
     onChange () {},
@@ -161,12 +172,12 @@ export default {
       console.log(event.detai)
       this.form.grade = event.target.name
     },
-    onClose () {
-      this.show = false
+    onCloseSelect () {
+      this.showSelect = false
     },
     onChangeSex () {
       console.log(2222)
-      this.show = true
+      this.showSelect = true
     },
     onSelect (event) {
       console.log(event)
@@ -175,14 +186,6 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
 
-<style scoped>
-.save-button {
-  margin: 30rpx 10rpx;
-}
-</style>
-<style>
-.van-field__error-message {
-  text-align: right !important;
-}
 </style>
