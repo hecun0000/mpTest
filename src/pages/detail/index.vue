@@ -59,7 +59,7 @@
         </div>
     
         <!--底部评价和详情-->
-        <ProductPingJia/>
+        <ProductPingJia :data="qaList" v-if="qaList.length>0"/>
         <van-divider contentPosition="center">活动详情</van-divider>
         <!-- <ProductFooter :content="article" :comment="commentList"></ProductFooter> -->
         <!-- <ProductPingJia /> -->
@@ -86,6 +86,8 @@ import ProductFooter from './ProductFooter'
 import ProductPingJia from './ProductPingJia'
 import HDialog from './dialog'
 import share from './share'
+import {getSwiper, getQa} from '../../api/activity'
+import store from '../../store'
 export default {
   components: {
     ProductFooter,
@@ -109,15 +111,33 @@ export default {
       ],
       product_name: '菏泽特产100%纯牡丹籽油一级冷榨健康食用油天然无添加高档礼盒装高档礼…',
       price_current: '10.00',
-      price_original: '20.00'
+      price_original: '20.00',
+      qaList: []
     }
   },
-  mounted () {
+  onLoad (params) {
     wx.setNavigationBarTitle({
       title: '活动详情'
     })
+    this.activityId = params.id
+    this.getSwiperList()
+    this.getQaList()
   },
   methods: {
+    async getQaList () {
+      const res = await getQa(this.activityId)
+      if (res.code === 200) {
+        this.qaList = res.data
+      }
+    },
+    async getSwiperList () {
+      const res = await getSwiper(this.activityId)
+      if (res.code === 200) {
+        this.picture_array = res.data.map(item => {
+          item = store.state.baseURL + 'image/' + item
+        })
+      }
+    },
     handleShare () {
       // this.$refs.dialog.onOpen()
       wx.navigateTo({url: '/pages/info/main'})

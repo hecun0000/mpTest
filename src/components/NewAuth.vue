@@ -76,7 +76,7 @@ export default new BaseComponent({
       },
       onShow () {
         let authInfo = wx.getStorageSync('authInfo')
-        // console.log(authInfo,this.showAuthModal,'----------------------');
+        console.log(authInfo, this.showAuthModal, '----------------------')
         if (authInfo && authInfo.token) {
           this.showAuthModal = false
         }

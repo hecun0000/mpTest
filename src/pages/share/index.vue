@@ -108,7 +108,7 @@
     </block>
     <!--帮砍榜-->
     <div class="rate-box">
-      <div class="hd">助力帮</div>
+      <div class="hd">助力榜</div>
       <div class="lf dot"></div>
       <div class="rt dot"></div>
       <div class="list">

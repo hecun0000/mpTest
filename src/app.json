@@ -1,12 +1,12 @@
 {
   "pages": [
-    "pages/home/main",
-    "pages/shop/main",
-    "pages/share/main",
     "pages/my/main",
+    "pages/home/main",
     "pages/detail/main",
-    "pages/help/main",
+    "pages/share/main",
     "pages/groupInfo/main",
+    "pages/shop/main",
+    "pages/help/main",
     "pages/palette/main",
     "pages/order/main",
     "pages/coupon/main",

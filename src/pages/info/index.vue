@@ -57,7 +57,12 @@
 
 <script>
 import { getUserInfo, setUserInfo } from '@/api/info'
-export default {
+import BasePlatPage from '@/utils/basePlatPage'
+import Auth from '@/components/NewAuth.vue'
+export default new BasePlatPage({
+  components: {
+    Auth
+  },
   data () {
     return {
       error: {
@@ -173,7 +178,7 @@ export default {
       this.form.sex = event.target.name
     }
   }
-}
+})
 </script>
 
 <style scoped>

@@ -8,11 +8,11 @@
 --> 
 <template>
   <div class="order-list">
-    <van-tabs sticky>
+    <!-- <van-tabs sticky>
       <van-tab title="全部"></van-tab>
       <van-tab title="已付款"></van-tab>
       <van-tab title="已取消"></van-tab>
-    </van-tabs>
+    </van-tabs> -->
     <div>
       <div class="order-item">
         <van-card
@@ -26,12 +26,18 @@
         ></van-card>
       </div>
     </div>
+        <Auth></Auth>
   </div>
 </template>
 
 <script>
 import { getOrder } from '@/api/order'
-export default {
+import Auth from '@/components/NewAuth.vue'
+import BasePlatPage from '@/utils/basePlatPage'
+export default new BasePlatPage({
+  components: {
+    Auth
+  },
   data () {
     return {
       list: [''],
@@ -55,7 +61,7 @@ export default {
       wx.navigateTo({ url })
     }
   }
-}
+})
 </script>
 
 <style>

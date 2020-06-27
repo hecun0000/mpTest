@@ -12,3 +12,6 @@ import fly from '@/utils/fly'
 export function getCoupon (data) {
   return fly.get('/coupon', data)
 }
+export function getCouponById (id) {
+  return fly.get('/coupon/' + id)
+}

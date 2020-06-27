@@ -110,7 +110,7 @@ export default {
       this.show = true
     },
     onClose () {
-      this.setData({ close: false })
+      // this.setData({ close: false })
     },
     valiate () {
       let result = true

@@ -3,161 +3,25 @@
     <div class="title-box">
       <div class="left">评价</div>
       <div class="info" @click="showPopup">
-        共300+条评论
+        共{{data.length}}+条评论
         <van-icon name="arrow" />
       </div>
     </div>
 
     <ul class="ask-box">
-      <li class="item">
-        <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-        <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-      </li>
-      <li class="item">
-        <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-        <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-      </li>
-      <li class="item">
-        <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-        <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-      </li>
+      <li class="item" v-for="(item, index) in dataTop" :key="index">
+            <div class="ask-title">{{ item.question }}</div>
+            <div class="ask-info">{{ item.answer }}</div>
+          </li>
     </ul>
 
     <van-popup :show="show" closeable position="bottom" @close="onClose">
       <div class="pop-box">
         <p class="pop-title">活动评价</p>
         <ul class="ask-box ask-box-pop">
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
-          </li>
-          <li class="item">
-            <div class="ask-title">问： 这个课程怎么样？我也想报名</div>
-            <div class="ask-info">答：很不错， 干货满满，听过后受益匪浅</div>
+          <li class="item" v-for="(item, index) in data" :key="index">
+            <div class="ask-title">{{ item.question }}</div>
+            <div class="ask-info">{{ item.answer }}</div>
           </li>
         </ul>
       </div>
@@ -175,10 +39,21 @@ export default {
     ProductDetails,
     Comment
   },
-  props: ['content', 'comment'],
+  props: ['content', 'comment', 'data'],
   data () {
     return {
       show: false
+    }
+  },
+  computed: {
+    dataTop () {
+      const res = []
+      for (let i = 0; i < 3; i++) {
+        if (this.data[i]) {
+          res.push(this.data[i])
+        }
+      }
+      return res
     }
   },
   methods: {
