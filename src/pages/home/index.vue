@@ -2,7 +2,7 @@
   <div class="list-page">
     <ul class="list">
       <li class="item" v-for="(item, index) in listData" :key="index" @click="jumpTo(item)">
-        <img src="http://static.hecun.site/hecun159210240836740.png" class="cover" alt srcset />
+        <img :src="item.headImg" class="cover" alt srcset />
         <p class="title">{{ item.title }}</p>
       </li>
     </ul>

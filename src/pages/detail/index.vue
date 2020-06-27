@@ -2,11 +2,11 @@
   <div class="container">
     <div class="share" @click="showShare">
       <img class="icon" src="./images//share.png" alt="">
-                        <div class="text">分享</div>
+        <div class="text">分享</div>
     </div>
         <swiper @change="swiperChange" indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true"
                 indicator-color="#D8D8D8" indicator-active-color="#E93C3E" :style="{height: (750)+'rpx'}">
-            <swiper-item v-for="(item,index) in picture_array" :key="index">
+            <swiper-item v-for="(item,index) in pictureArray" :key="index">
                 <image :src="item" :id="index" @load="imageLoad" class="slide-image" mode="aspectFit" style="width: 100%; height: 100%"></image>
             </swiper-item>
         </swiper>
@@ -14,14 +14,14 @@
         <div class="mian-info">
           <div class="left">
             <div class="price">
-              ￥ <div class="price-num">99.00</div>
+              ￥ <div class="price-num">{{activityData.activityPrice}}</div>
             </div>
             <div class="price-info">
               <p class="price-origin">
-                ￥599.00
+                ￥{{activityData.originalPrice}}
               </p>
               <div class="main-num">
-                <div class="num">2</div>
+                <div class="num">{{activityData.teamCount}}</div>
                 人拼
               </div>
             </div>
@@ -39,44 +39,24 @@
         <!--商品名称  经典模式-->
         <div class="base-info">
             <div class="tag">预约</div>
-            <div class="title line-clamp-2">{{product_name}}</div>
-            <!-- <div class="func flex">
-                <form report-submit="true" @submit.stop="collect">
-                    <button class="collect" formType="submit">
-                        <img class="icon" v-if="collectStatus == 2 " src="./images//collection.png" >
-                        <img class="icon" src="./images//collection-select.png" v-else>
-                        <div class="text">收藏</div>
-                    </button>
-                </form>
-                <form report-submit="true" @submit.stop="share">
-                    <button class="share" formType="submit">
-                        <img class="icon" src="./images//share.png" alt="">
-                        <div class="text">分享</div>
-                    </button>
-                </form>
-            </div>
-            <div class="price">￥{{price_current}}  <text style="text-decoration: line-through;margin-left: 20rpx;font-size: 30rpx;color: #999999">￥{{price_original}}</text></div> -->
+            <div class="title line-clamp-2">{{activityData.title}}</div>
         </div>
     
         <!--底部评价和详情-->
         <ProductPingJia :data="qaList" v-if="qaList.length>0"/>
         <van-divider contentPosition="center">活动详情</van-divider>
-        <!-- <ProductFooter :content="article" :comment="commentList"></ProductFooter> -->
-        <!-- <ProductPingJia /> -->
+  
         <div style="padding: 24rpx; background:#fff;">
-            <wxParse :content="article" :imageProp="imageProp"></wxParse>
+            <wxParse :content="activityData.detail" :imageProp="imageProp"></wxParse>
         </div>
         <van-goods-action>
-          <van-goods-action-icon icon="chat-o" text="客服" dot />
-          <van-goods-action-icon icon="shop-o" text="店铺" />
-          <van-goods-action-button text="分享活动" type="warning" @click="handleShare"/>
-          <van-goods-action-button text="支付定金" />
+          <van-goods-action-icon icon="home-o" text="首页" @click="jumpTo('/pages/home/main')"/>
+          <van-goods-action-icon icon="user-o" text="我的" @click="jumpTo('/pages/my/main')"/>
+          <van-goods-action-button text="分享活动" type="warning" open-type="share"/>
+          <van-goods-action-button text="支付定金" @click="pay"/>
         </van-goods-action>
-<!--       
-        <SkuSelector :attrList="attrList" :skuList="skuList" :goodsInfo="initGoodsInfo" ref="SkuSelector" @updateSkuInfo="updateSkuInfo"></SkuSelector>
-        <Mask :mask="mask" :goodsShareInfo="goodsShareInfo" :profile="profile"></Mask> -->
-        <share ref="share"></share>
-        <h-dialog ref="dialog"/>
+        <share ref="share" :info="info"></share>
+        <!-- <h-dialog ref="dialog"/> -->
     </div>
 </template>
 
@@ -86,7 +66,7 @@ import ProductFooter from './ProductFooter'
 import ProductPingJia from './ProductPingJia'
 import HDialog from './dialog'
 import share from './share'
-import {getSwiper, getQa} from '../../api/activity'
+import {getSwiper, getQa, getAtivityById, getPay} from '../../api/activity'
 import store from '../../store'
 export default {
   components: {
@@ -96,22 +76,16 @@ export default {
     HDialog,
     share
   },
-
   data () {
     return {
-      article: '<p>弄丢了开发商方积分打扫房间</p><p><br></p><p>对方是否了第三款fd是否</p><p> dfs</p><p><br></p><p><br></p><p>范德萨发懒得说开发第三方了</p><p><br></p><p>fdslf  房贷释放了</p><p><br></p><p><span style="color: rgb(178, 178, 0);">抗衰老的防腐剂</span></p><p><br></p><ol><li class="ql-indent-1">范德萨范德萨<span style="color: rgb(255, 235, 204);"><span class="ql-cursor">﻿</span></span></li><li>范德萨范德萨发</li><li>fdsf d第三方</li></ol><p>范德萨范德萨发</p><p>范德萨发</p><p><br></p><p><br></p><p>对方是否范德萨范德萨</p><p><strong> 刻录机第三方</strong></p><p><br></p><p>的司法鉴定所</p><p><br></p><p>放电视了付款‘</p><p><br></p><p>了开发商的’</p> ',
+      info: {},
+      pictureArray: [],
+      activityData: {},
       imageProp: {
         mode: 'widthFix',
         lazyLoad: true
       },
-      time: 30 * 60 * 60 * 1000,
-      picture_array: [
-        'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg',
-        'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg'
-      ],
-      product_name: '菏泽特产100%纯牡丹籽油一级冷榨健康食用油天然无添加高档礼盒装高档礼…',
-      price_current: '10.00',
-      price_original: '20.00',
+      time: 0,
       qaList: []
     }
   },
@@ -122,8 +96,61 @@ export default {
     this.activityId = params.id
     this.getSwiperList()
     this.getQaList()
+    this.getDetail()
+    if (params.id) {
+      console.log(params.id)
+      this.trade_no = params.id
+      // this.getBargainActivityInfo(this.trade_no)
+    }
+    if (params.scene) {
+      let mainId = decodeURIComponent(params.scene).split('_')[2]
+      console.log(mainId)
+      // this.getBargainActivityInfo(main_id)
+    }
+  },
+  onShareAppMessage () {
+    return {
+      title: '这里有优惠券，你确定不来看看嘛？',
+      path: '/pages/detail/main?id=' + this.activityId + '&from=share',
+      imageUrl: this.pictureArray[0]
+    }
   },
   methods: {
+    jumpTo (url) {
+      wx.switchTab({url})
+    },
+    async getDetail () {
+      const id = this.activityId
+      const res = await getAtivityById(id)
+      if (res.code === 200) {
+        this.activityData = res.data
+        this.time = new Date(res.data.endDate).getTime() - Date.now()
+        this.info.title = res.data.title
+      }
+    },
+    async pay () {
+      const data = {
+        openid: wx.getStorageSync('openId'),
+        orderName: this.activityData.title,
+        price: 0.01
+      }
+      const res = await getPay(data)
+      if (res.code === 200) {
+        console.log(res.data)
+        const { paySign, nonceStr, signType, timeStamp } = res.data
+        wx.requestPayment({
+          timeStamp,
+          nonceStr,
+          package: res.data.package,
+          signType,
+          paySign,
+          success (res) {
+            console.log(res, 'eeeeeeee')
+          },
+          fail (res) { }
+        })
+      }
+    },
     async getQaList () {
       const res = await getQa(this.activityId)
       if (res.code === 200) {
@@ -133,14 +160,22 @@ export default {
     async getSwiperList () {
       const res = await getSwiper(this.activityId)
       if (res.code === 200) {
-        this.picture_array = res.data.map(item => {
-          item = store.state.baseURL + 'image/' + item
+        this.pictureArray = res.data.map(item => {
+          item = store.state.baseURL + 'images/' + item.path
+          console.log(item)
+          return item
         })
+        this.info.url = this.pictureArray[0]
+        console.log(this.pictureArray)
       }
     },
     handleShare () {
+      // wx.updateShareMenu({
+      //   withShareTicket: true,
+      //   success () { }
+      // })
       // this.$refs.dialog.onOpen()
-      wx.navigateTo({url: '/pages/info/main'})
+      // wx.navigateTo({url: '/pages/info/main'})
     },
     showShare () {
       this.$refs.share.onClickShow()

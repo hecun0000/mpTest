@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/my/main",
     "pages/home/main",
+    "pages/my/main",
     "pages/detail/main",
     "pages/share/main",
     "pages/groupInfo/main",

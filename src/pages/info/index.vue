@@ -17,13 +17,13 @@
         :error-message="error.phone"
       />
       <van-field
-        :value="form.sex"
+        :value="form.gender"
         label="性别"
         placeholder="请选择性别"
         readonly
         input-align="right"
-        :error-message="error.sex"
-        @click="onChangeSex"
+        :error-message="error.gender"
+        @click="onChangegender"
       />
       <van-action-sheet
         :show="show"
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { getUserInfo, setUserInfo } from '@/api/info'
+import { setUserInfoById, getUserInfoById } from '@/api/info'
 import BasePlatPage from '@/utils/basePlatPage'
 import Auth from '@/components/NewAuth.vue'
 export default new BasePlatPage({
@@ -68,13 +68,13 @@ export default new BasePlatPage({
       error: {
         name: '',
         phone: '',
-        sex: '',
+        gender: '',
         grade: ''
       },
       form: {
         name: '',
         phone: '',
-        sex: '',
+        gender: '',
         grade: ''
       },
       show: false,
@@ -104,8 +104,21 @@ export default new BasePlatPage({
     wx.setNavigationBarTitle({
       title: '个人信息'
     })
+    console.log(11111111111111100000000000000011111111)
+    this.getUesrInfo()
   },
   methods: {
+    async getUesrInfo () {
+      console.log(' wx.getStorageSync', wx.getStorageSync('openId'))
+      const data = {
+        openid: wx.getStorageSync('openId')
+      }
+      const res = await getUserInfoById(data)
+      if (res.code === 200) {
+        this.form = res.data
+      }
+    },
+
     valiate () {
       let result = true
       if (!this.form.name) {
@@ -120,11 +133,11 @@ export default new BasePlatPage({
       } else {
         this.error.phone = ''
       }
-      if (!this.form.sex) {
-        this.error.sex = '请选择性别'
+      if (!this.form.gender) {
+        this.error.gender = '请选择性别'
         result = false
       } else {
-        this.error.sex = ''
+        this.error.gender = ''
       }
       if (!this.form.grade) {
         this.error.grade = '请选择年级'
@@ -140,19 +153,14 @@ export default new BasePlatPage({
         this.setInfo()
       }
     },
-    async getInfo () {
-      const res = await getUserInfo()
-      if (res.code === 200) {
-        this.form = res.data
-      }
-    },
     async setInfo () {
       console.log('保存')
-      const data = {}
-      const res = await setUserInfo(data)
+      const data = this.form
+      data.openid = wx.getStorageSync('openId')
+      const res = await setUserInfoById(data)
 
       if (res.code === 200) {
-        // wx.navigateTo({ url: '/page/my/main' })
+        wx.switchTab({ url: '/pages/my/main' })
       }
     },
     onChange () {},
@@ -169,13 +177,13 @@ export default new BasePlatPage({
     onClose () {
       this.show = false
     },
-    onChangeSex () {
+    onChangegender () {
       console.log(2222)
       this.show = true
     },
     onSelect (event) {
       console.log(event)
-      this.form.sex = event.target.name
+      this.form.gender = event.target.name
     }
   }
 })

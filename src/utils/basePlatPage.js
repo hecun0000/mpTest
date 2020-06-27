@@ -36,7 +36,7 @@ export default class basePlatPage {
         pageObj.onLoad = async function (options) {
           // await basePlatPage.wait()
 
-          // await basePlatPage.checkAuth();
+          await basePlatPage.checkAuth()
           // if (!store.state.authInfo.token) return
 
           // await basePlatPage.sysTabBarDetail()

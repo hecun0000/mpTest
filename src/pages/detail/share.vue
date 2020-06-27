@@ -16,13 +16,21 @@
 <script>
 import { getQrCode } from '@/api/qr'
 import store from '@/store'
+import {getUserInfoById} from '@/api/info'
+
 export default {
+  props: {
+    info: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data () {
     return {
       qrFilePath: '',
       coverFilePath: '',
       textFinalTop: 0,
-      avatar: 'http://static.hecun.site/hecun.321c947a.jpg',
+      avatar: '',
       canvas: null,
       width: 0,
       height: 0,
@@ -31,24 +39,34 @@ export default {
       show: false,
       imgUrl: '',
       dpr: 0,
-      info: {
-        title: '兰蔻大粉水新清滢柔肤水化妆品套装护肤化妆水爽肤水补水保湿超级盒子',
-        url: 'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg'
-      }
+      nickName: ''
     }
   },
-  mounted () {
+  async mounted () {
+    this.show = false
     const res = wx.getSystemInfoSync()
     this.windowWidth = res.windowWidth
     this.windowHeight = res.windowHeight
     this.dpr = wx.getSystemInfoSync().pixelRatio
     console.log(this.dpr, 'this.dpr')
     // this.init()
+    await this.getUesrInfo()
     this.saveAvatar(this.avatar)
     this.saveCover(this.info.url)
     this.getQr()
   },
   methods: {
+    async getUesrInfo () {
+      console.log(' wx.getStorageSync', wx.getStorageSync('openId'))
+      const data = {
+        openid: wx.getStorageSync('openId')
+      }
+      const res = await getUserInfoById(data)
+      if (res.code === 200) {
+        this.avatar = res.data.avatarUrl
+        this.nickName = res.data.nickName
+      }
+    },
     toPX (px) {
       return px / 750 * this.windowWidth
     },
@@ -178,7 +196,8 @@ export default {
       }
       this.textFinalTop = textTop
     },
-    drawnNickname (ctx, name = '禾寸') {
+    drawnNickname (ctx) {
+      let name = this.nickName
       const fontSize = 12 * this.dpr
       ctx.font = fontSize + 'px Verdana'
       ctx.fillStyle = '#000000'

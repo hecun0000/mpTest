@@ -14,7 +14,6 @@ export default class auth {
         }
         if (auth.checkAuth()) {
           auth.isLiting = false
-          Store.state.authInfo = wx.getStorageSync('authInfo')
           resolve(true)
           return
         }
@@ -34,7 +33,9 @@ export default class auth {
             }).then(response => {
               wx.hideLoading()
               const res = response.data.data
-              Store.state.sessionKey = res
+              Store.state.sessionKey = res.sessionKey
+              console.log(res.openid, ' res.openid')
+              wx.setStorageSync('openId', res.openid)
               resolve(true)
             })
           },
@@ -49,22 +50,12 @@ export default class auth {
   // 检查令牌是否有效 true--> 有效  false--> 无效
 
     static checkAuth () {
-      // TODO: 修改过期时间
-      let authInfo = wx.getStorageSync('authInfo') || {}
-      let expiryTime = 0
-      let nowTime = ~~(Date.now() / 1000)
-
-      if (authInfo.exp) {
-        expiryTime = authInfo.exp
-      }
-
-      return expiryTime - nowTime > 300
+      return !!wx.getStorageSync('openId')
     }
 
   // 获取token
     static getToken () {
-      let authInfo = wx.getStorageSync('authInfo')
-      return authInfo.token
+      return wx.getStorageSync('openId')
     }
   // 获取token
     static saveToken (type, token) {
