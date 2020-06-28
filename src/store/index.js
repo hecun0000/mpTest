@@ -11,9 +11,9 @@ const store = new Vuex.Store({
     version: '',
     newVersion: 'v2.0.0', // 当前最新版本
     // api域名
-    baseURL: 'http://zdhcrh.natappfree.cc/',
+    baseURL: 'http://qwvdt7.natappfree.cc/',
     // baseURL: 'https://api.store.ledianyun.com/',
-    domain: 'http://zdhcrh.natappfree.cc/',
+    domain: 'http://qwvdt7.natappfree.cc/',
     // domain: 'https://api.ledianyun.com/',
     // 用户信息
     checkTime: {},

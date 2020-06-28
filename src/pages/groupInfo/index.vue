@@ -6,13 +6,13 @@
             </div>
             <!--商品信息-->
             <div class="product-info flex">
-                <img class="product-img" :src="groupInfo.product_pics" alt="">
+                <img class="product-img" v-if="pictureArray.lenth >0" :src="pictureArray[0]" alt="">
                 <div class="product-text flex">
-                    <div class="name line-clamp-2">{{groupInfo.product_name}}</div>
-                    <div class="sku line-clamp-1" ><span > {{property}} </span>数量：{{groupInfo.product_quantity}}</div>
+                    <div class="name line-clamp-2">{{activityData.title}}</div>
+                    <!-- <div class="sku line-clamp-1" ><span > {{property}} </span>数量：{{groupInfo.product_quantity}}</div> -->
 
-                    <div class="price-info flex"><div class="num">{{groupInfo.group_total}}人团</div><div class="price"><span>￥</span>{{groupInfo.price_current}}</div></div>
-                    <div class="simple">单买价￥{{groupInfo.price_original}}</div>
+                    <div class="price-info flex"><div class="num">{{activityData.teamCount}}人团</div><div class="price"><span>￥</span>{{activityData.activityPrice}}</div></div>
+                    <div class="simple">单买价￥{{activityData.originalPrice}}</div>
                 </div>
             </div>
             <!--团情况-->
@@ -35,12 +35,12 @@
                 </div>
 
                 <div class="text" v-if="status===0">
-<!--                    还差{{groupInfo.people_dis}}人成团，-->
-<!--                    <span>{{time_info.day}}</span> ：-->
-<!--                    <span>{{time_info.hour}}</span> ：-->
-<!--                    <span>{{time_info.minute}}</span> ：-->
-<!--                    <span style="margin-right: 20rpx">{{time_info.second}}</span> -->
-<!--                    结束-->
+                    <!-- 还差{{groupInfo.people_dis}}人成团，
+                    <span>{{time_info.day}}</span> ：
+                    <span>{{time_info.hour}}</span> ：
+                    <span>{{time_info.minute}}</span> ：
+                    <span style="margin-right: 20rpx">{{time_info.second}}</span>
+                    结束 -->
                     <div class="explain">
                         <img src="./images/label.png" class="rotate" alt="">
                         <div>距结束</div>
@@ -56,15 +56,15 @@
                         <div class="item">{{time_info.second}}</div>
                     </div>
                     <div class="people-number">
-                        <span>{{groupInfo.group_total}}</span>
+                        <span>{{activityData.teamCount}}</span>
                         <div>人成团，还差</div>
-                        <span>{{groupInfo.people_dis}}</span>
+                        <span>{{activityData.teamCount - shareList.length}}</span>
                         <div>人</div>
                     </div>
                 </div>
                 <div class="group-person">
-                    <div class="item" v-for="(user,index) in userList" :key="index">
-                        <img class="avatar" :src="user.avatar" alt="">
+                    <div class="item" v-for="(user,index) in shareList" :key="index">
+                        <img class="avatar" :src="user.avatarUrl" alt="">
                         <div class="special" v-if="user.is_head==1">团长</div>
                     </div>
                     <div class="dot" v-if="groupInfo.people_dis!=0||hasMoreUser">......</div>
@@ -84,7 +84,7 @@
         <!-- <form :report-submit="true" @submit="createGroup" v-if="status === 1 || groupInfo.people_dis <= 0">
             <button class="btn"  formType="submit">再开一团</button>
         </form> -->
-        <form :report-submit="true" @submit="showActionSheet" v-if="status === 0 && is_self == 1 && payment_status===2">
+        <form :report-submit="true" @submit="showActionSheet" v-if="status === 0 && is_self == 1">
             <button class="btn" formType="submit">邀请好友参团</button>
         </form>
 
@@ -92,7 +92,7 @@
             <button class="btn"  formType="submit">去支付</button>
         </form>
 
-        <!-- <SelectSheet ref="selectSheet" :trade_no="trade_no"></SelectSheet> -->
+        <SelectSheet ref="selectSheet" :trade_no="trade_no"></SelectSheet>
         <Auth></Auth>
     </div>
 </template>
@@ -101,23 +101,30 @@
     import BasePlatPage from '@/utils/basePlatPage'
 
 // components
-// import SelectSheet from '../components/SelectSheet'
+import SelectSheet from './SelectSheet'
 import Auth from '@/components/NewAuth'
 
 // import Mask from '@/components/Mask'
 // api
 // import { groupDetail } from '@/api/group'
-// import { genereateShareImage } from '@/api/activity'
+import { getOrderByID } from '@/api/order'
 // import { collectFormID } from '@/api/common'
-
+import store from '../../store'
+import {getSwiper} from '../../api/activity'
 import countdown from '@/utils/countdown'
 export default new BasePlatPage({
       components: {
-        Auth
+        Auth,
+        SelectSheet
         // Mask
       },
       data () {
         return {
+          activityId: '',
+          pictureArray: [],
+          activityData: {},
+          user: {},
+          shareList: [],
           groupInfo: {
             product_pics: 'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg',
             product_name: '菏泽特产100%纯牡丹籽油一级冷榨健康食用油天然无添加高档礼盒装高档礼…',
@@ -163,7 +170,7 @@ export default new BasePlatPage({
         // 倒计时函数
         activityCountDown (timeStamp) {
           countdown(timeStamp, () => {
-            this.status = 2
+            this.status = 0
           }, (d, h, m, s) => {
             this.time_info = {
               day: d,
@@ -291,26 +298,52 @@ export default new BasePlatPage({
           this.getGroupActivityInfo({
             group_no: this.group_no
           })
+        },
+        async getOrderDetail (id) {
+          const res = await getOrderByID({id})
+          if (res.code === 200) {
+            console.log(res.data, '这是活动详情')
+            this.activityData = res.data.activity
+            this.user = res.data.user
+            this.shareList = res.data.shareList
+            this.activityId = res.data.activity.id
+            this.user.is_head = 1
+            this.shareList.push(this.user)
+            this.checkHasIn()
+            this.getSwiperList()
+            this.activityCountDown(new Date(res.data.activity.endDate).getTime() - Date.now())
+          }
+        },
+        // 判断是否在当前团中
+        checkHasIn () {
+          const current = wx.getStorageSync('openId')
+          const res = this.shareList.findIndex(item => item.openId === current)
+          this.is_self = res > -1 ? 1 : 2
+        },
+        async getSwiperList () {
+          const res = await getSwiper(this.activityId)
+          if (res.code === 200) {
+            this.pictureArray = res.data.map(item => {
+              item = store.state.baseURL + 'images/' + item.path
+              console.log(item)
+              return item
+            })
+            this.info.url = this.pictureArray[0]
+            console.log(this.pictureArray)
+          }
         }
       },
       onLoad (params) {
         this.params = params
-        wx.hideShareMenu()
-        if (params.scene) {
-          let groupId = decodeURIComponent(params.scene).split('_')[2]
-          this.getGroupActivityInfo({
-            groupId: groupId
-          })
-        } else if (params.group_no) {
-          this.group_no = params.group_no
-          this.getGroupActivityInfo({
-            group_no: params.group_no
-          })
-        } else if (params.groupId) {
-          this.groupId = params.groupId
-          this.getGroupActivityInfo({
-            groupId: params.groupId
-          })
+        console.log(params, 'paramsparamsparamsparamsparams')
+        // wx.hideShareMenu()
+        // if (params.scene) {
+        //   let groupId = decodeURIComponent(params.scene).split('_')[2]
+        //   this.getOrderDetail(groupId)
+        // } else
+        if (params.orderNum) {
+          this.orderNum = params.orderNum
+          this.getOrderDetail(this.orderNum)
         }
       },
       mounted () {

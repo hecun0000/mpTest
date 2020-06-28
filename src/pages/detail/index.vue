@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <div class="share" @click="showShare">
+    <!-- <div class="share" @click="showShare">
       <img class="icon" src="./images//share.png" alt="">
         <div class="text">分享</div>
-    </div>
+    </div> -->
         <swiper @change="swiperChange" indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true"
                 indicator-color="#D8D8D8" indicator-active-color="#E93C3E" :style="{height: (750)+'rpx'}">
             <swiper-item v-for="(item,index) in pictureArray" :key="index">
@@ -20,7 +20,7 @@
               <p class="price-origin">
                 ￥{{activityData.originalPrice}}
               </p>
-              <div class="main-num">
+              <div class="main-num" v-if="activityData.type === 'group'">
                 <div class="num">{{activityData.teamCount}}</div>
                 人拼
               </div>
@@ -53,10 +53,11 @@
           <van-goods-action-icon icon="home-o" text="首页" @click="jumpTo('/pages/home/main')"/>
           <van-goods-action-icon icon="user-o" text="我的" @click="jumpTo('/pages/my/main')"/>
           <van-goods-action-button text="分享活动" type="warning" open-type="share"/>
-          <van-goods-action-button text="支付定金" @click="pay"/>
+          <van-goods-action-button :text="activityData.type === 'group'? '发起拼团':'发起助力'" @click="pay"/>
         </van-goods-action>
         <share ref="share" :info="info"></share>
         <!-- <h-dialog ref="dialog"/> -->
+        <Auth></Auth>
     </div>
 </template>
 
@@ -67,14 +68,18 @@ import ProductPingJia from './ProductPingJia'
 import HDialog from './dialog'
 import share from './share'
 import {getSwiper, getQa, getAtivityById, getPay} from '../../api/activity'
+import {createOrder} from '../../api/order'
 import store from '../../store'
-export default {
+import Auth from '@/components/NewAuth.vue'
+import BasePlatPage from '@/utils/basePlatPage'
+export default new BasePlatPage({
   components: {
     ProductFooter,
     wxParse,
     ProductPingJia,
     HDialog,
-    share
+    share,
+    Auth
   },
   data () {
     return {
@@ -131,25 +136,50 @@ export default {
     async pay () {
       const data = {
         openid: wx.getStorageSync('openId'),
-        orderName: this.activityData.title,
-        price: 0.01
+        orderName: this.activityData.title.slice(0, 36),
+        price: 0.01,
+        activityId: this.activityId
       }
       const res = await getPay(data)
+      const self = this
       if (res.code === 200) {
         console.log(res.data)
-        const { paySign, nonceStr, signType, timeStamp } = res.data
+        const { paySign, nonceStr, signType, timeStamp, orderId } = res.data
         wx.requestPayment({
           timeStamp,
           nonceStr,
           package: res.data.package,
           signType,
           paySign,
-          success (res) {
+          success: async function (res) {
             console.log(res, 'eeeeeeee')
+            const orderNum = orderId
+            // console.log(orderNum, 'orderNum', self.activityData.type)
+            if (self.activityData.type === 'group') {
+              // 拼团
+              wx.navigateTo({url: '/pages/groupInfo/main?orderNum=' + orderNum})
+            } else {
+              // 助力
+              wx.navigateTo({url: '/pages/share/main?orderNum=' + orderNum})
+            }
           },
           fail (res) { }
         })
       }
+    },
+    async addOrder () {
+      const data = {
+        'activityId': this.activityId,
+        'userId': wx.getStorageSync('openId')
+      }
+      console.log(data, 'addorder,,,ssssss')
+      const res = await createOrder(data)
+      let orderNum
+      if (res.code === 200) {
+        orderNum = res.data
+      }
+      console.log(orderNum, 'orderNum11111111111111')
+      return orderNum
     },
     async getQaList () {
       const res = await getQa(this.activityId)
@@ -182,7 +212,7 @@ export default {
     }
   }
 
-}
+})
 </script>
 
 <style lang="less" scoped>

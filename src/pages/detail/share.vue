@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-overlay :show="show" bind:click="onClickHide" >
+    <van-overlay :show="show" @click="onClickHide" >
       <div class="poper-box">
 
       </div>
