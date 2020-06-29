@@ -105,6 +105,7 @@ export default new BasePlatPage({
     wx.setNavigationBarTitle({
       title: '活动详情'
     })
+    console.log(params, 'params-----活动详情')
     this.activityId = params.id
     this.getSwiperList()
     this.getQaList()
@@ -176,6 +177,7 @@ export default new BasePlatPage({
     async pay () {
       const resultUserInfo = await this.checkUserInfo()
       console.log('resultUserInfo', resultUserInfo)
+      console.log('this.activityId', this.activityId)
       if (!resultUserInfo) return
       const data = {
         openid: wx.getStorageSync('openId'),
@@ -183,6 +185,7 @@ export default new BasePlatPage({
         price: 0.01,
         activityId: this.activityId
       }
+      console.log(data, '生成订单参数传递')
       const res = await getPay(data)
       const self = this
       if (res.code === 200) {
@@ -199,10 +202,10 @@ export default new BasePlatPage({
             const orderNum = orderId
             // console.log(orderNum, 'orderNum', self.activityData.type)
             if (self.activityData.type === 'group') {
-              console.log(self.order, 'this.order')
+              console.log(self.order, 'this.order 生成拼团')
               if (self.order) {
                 const result = await addShare({
-                  order: self.order,
+                  orderId: self.order,
                   userId: wx.getStorageSync('openId')
                 })
 
@@ -211,6 +214,14 @@ export default new BasePlatPage({
               // 拼团
               wx.navigateTo({url: '/pages/groupInfo/main?orderNum=' + orderNum})
             } else {
+              if (self.order) {
+                const result = await addShare({
+                  orderId: self.order,
+                  userId: wx.getStorageSync('openId')
+                })
+
+                console.log(result, '参加分享')
+              }
               // 助力
               wx.navigateTo({url: '/pages/share/main?orderNum=' + orderNum})
             }

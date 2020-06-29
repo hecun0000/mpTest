@@ -250,8 +250,8 @@ export default new BasePlatPage({
           this.$router.push({
             path: '/pages/detail/main',
             query: {
-              order: this.orderNum,
-              activityId: this.activityId
+              orderNum: this.orderNum,
+              id: this.activityId
             }
           })
         },
@@ -286,9 +286,10 @@ export default new BasePlatPage({
           let text = this.groupText[Math.round(Math.random() * 3)]
           return {
             title: text,
-            path: '/pages/detail/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
+            path: '/pages/groupInfo/main?orderNum=' + this.orderNum,
             imageUrl: this.pictureArray[0]
           }
+          // path: '/pages/groupInfo/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
         },
         createPoster () {
           this.$refs.share.onClickShow()
@@ -309,7 +310,7 @@ export default new BasePlatPage({
             this.shareList.push(this.user)
             this.checkHasIn()
             this.getSwiperList()
-            this.activityCountDown(new Date(res.data.activity.endDate).getTime() - Date.now())
+            this.activityCountDown(new Date(res.data.activity.endDate).getTime() / 1000)
           }
         },
         // 判断是否在当前团中

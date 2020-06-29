@@ -185,7 +185,7 @@ export default new BasePlatPage({
         this.shareList.push(this.user)
         this.checkHasIn()
         this.getSwiperList()
-        this.activityCountDown(new Date(res.data.activity.endDate).getTime() - Date.now())
+        this.activityCountDown(new Date(res.data.activity.endDate).getTime() / 1000)
       }
     },
     // 判断是否在当前团中
