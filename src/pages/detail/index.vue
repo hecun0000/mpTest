@@ -58,6 +58,7 @@
         <share ref="share" :info="info"></share>
         <!-- <h-dialog ref="dialog"/> -->
         <Auth></Auth>
+        <van-dialog id="van-dialog" />
     </div>
 </template>
 
@@ -66,19 +67,21 @@ import wxParse from 'ldy-mpvue-wxparse'
 import ProductFooter from './ProductFooter'
 import ProductPingJia from './ProductPingJia'
 import HDialog from './dialog'
-import share from './share'
+// import share from './share'
 import {getSwiper, getQa, getAtivityById, getPay} from '../../api/activity'
-import {createOrder} from '../../api/order'
+import {createOrder, addShare} from '../../api/order'
 import store from '../../store'
 import Auth from '@/components/NewAuth.vue'
 import BasePlatPage from '@/utils/basePlatPage'
+import {getUserInfoById} from '@/api/info'
+import Dialog from '../../../static/vant/dialog/dialog'
 export default new BasePlatPage({
   components: {
     ProductFooter,
     wxParse,
     ProductPingJia,
     HDialog,
-    share,
+    // share,
     Auth
   },
   data () {
@@ -91,8 +94,12 @@ export default new BasePlatPage({
         lazyLoad: true
       },
       time: 0,
-      qaList: []
+      qaList: [],
+      userInfo: {}
     }
+  },
+  onShow () {
+    this.getUesrInfo()
   },
   onLoad (params) {
     wx.setNavigationBarTitle({
@@ -102,9 +109,9 @@ export default new BasePlatPage({
     this.getSwiperList()
     this.getQaList()
     this.getDetail()
-    if (params.id) {
-      console.log(params.id)
-      this.trade_no = params.id
+    console.log(params, params.orderNum)
+    if (params.orderNum) {
+      this.order = params.orderNum
       // this.getBargainActivityInfo(this.trade_no)
     }
     if (params.scene) {
@@ -124,6 +131,29 @@ export default new BasePlatPage({
     jumpTo (url) {
       wx.switchTab({url})
     },
+    checkUserInfo () {
+      console.log('check')
+      return new Promise((resolve, reject) => {
+        const { phone } = this.userInfo
+        if (!phone) {
+          Dialog.confirm({
+            title: '温馨提示',
+            message: '您暂未完善个人信息，请先完成个人信息！'
+          })
+            .then(() => {
+            // on confirm
+              wx.navigateTo({url: '/pages/info/main'})
+              resolve(false)
+            })
+            .catch(() => {
+            // on cancel
+              resolve(false)
+            })
+        } else {
+          resolve(true)
+        }
+      })
+    },
     async getDetail () {
       const id = this.activityId
       const res = await getAtivityById(id)
@@ -133,7 +163,20 @@ export default new BasePlatPage({
         this.info.title = res.data.title
       }
     },
+    async getUesrInfo () {
+      console.log(' wx.getStorageSync', wx.getStorageSync('openId'))
+      const data = {
+        openid: wx.getStorageSync('openId')
+      }
+      const res = await getUserInfoById(data)
+      if (res.code === 200) {
+        this.userInfo = res.data
+      }
+    },
     async pay () {
+      const resultUserInfo = await this.checkUserInfo()
+      console.log('resultUserInfo', resultUserInfo)
+      if (!resultUserInfo) return
       const data = {
         openid: wx.getStorageSync('openId'),
         orderName: this.activityData.title.slice(0, 36),
@@ -156,6 +199,15 @@ export default new BasePlatPage({
             const orderNum = orderId
             // console.log(orderNum, 'orderNum', self.activityData.type)
             if (self.activityData.type === 'group') {
+              console.log(self.order, 'this.order')
+              if (self.order) {
+                const result = await addShare({
+                  order: self.order,
+                  userId: wx.getStorageSync('openId')
+                })
+
+                console.log(result, '参加拼团')
+              }
               // 拼团
               wx.navigateTo({url: '/pages/groupInfo/main?orderNum=' + orderNum})
             } else {

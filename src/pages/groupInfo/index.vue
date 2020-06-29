@@ -67,8 +67,8 @@
                         <img class="avatar" :src="user.avatarUrl" alt="">
                         <div class="special" v-if="user.is_head==1">团长</div>
                     </div>
-                    <div class="dot" v-if="groupInfo.people_dis!=0||hasMoreUser">......</div>
-                    <div class="item vacant" v-if="groupInfo.people_dis!=0">?</div>
+                    <div class="dot" v-if="activityData.teamCoun!=0||hasMoreUser">......</div>
+                    <div class="item vacant" v-if="activityData.teamCoun!=0">?</div>
                     <div class="item" v-if="status===1&&hasMoreUser">
                         <img class="avatar" :src="lastUser.avatar" alt="">
                         <div class="special" v-if="lastUser.is_head==1">团长</div>
@@ -78,22 +78,23 @@
         </div>
         <!--btn-->
 
-        <form :report-submit="true" @submit="joinGroup" v-if="status === 0 && is_self == 2 && groupInfo.people_dis > 0">
-            <button class="btn"  formType="submit">我要参团</button>
-        </form>
-        <!-- <form :report-submit="true" @submit="createGroup" v-if="status === 1 || groupInfo.people_dis <= 0">
-            <button class="btn"  formType="submit">再开一团</button>
-        </form> -->
-        <form :report-submit="true" @submit="showActionSheet" v-if="status === 0 && is_self == 1">
-            <button class="btn" formType="submit">邀请好友参团</button>
-        </form>
+        <div  @click="joinGroup" v-if="status === 0">
+            <button class="btn" >我要参团</button>
+        </div>
+        <!-- <div  @click="createGroup" v-if="status === 1 || groupInfo.people_dis <= 0">
+            <button class="btn"  formType="click">再开一团</button>
+        </div> -->
+        <div  @click="showActionSheet" v-if="status === 0 && is_self == 1">
+            <button class="btn">邀请好友参团</button>
+        </div>
 
-        <form :report-submit="true" @submit="handlePay" v-if="status === 0 && is_self == 1 && payment_status===1">
-            <button class="btn"  formType="submit">去支付</button>
-        </form>
+        <div  @click="handlePay" v-if="status === 0 && is_self == 1 && payment_status===1">
+            <button class="btn"  >去支付</button>
+        </div>
 
-        <SelectSheet ref="selectSheet" :trade_no="trade_no"></SelectSheet>
+        <SelectSheet ref="selectSheet" :orderNum="orderNum" @createPoster="createPoster"></SelectSheet>
         <Auth></Auth>
+        <share ref="share" :info="info"/>
     </div>
 </template>
 
@@ -102,6 +103,7 @@
 
 // components
 import SelectSheet from './SelectSheet'
+import share from './share'
 import Auth from '@/components/NewAuth'
 
 // import Mask from '@/components/Mask'
@@ -115,29 +117,24 @@ import countdown from '@/utils/countdown'
 export default new BasePlatPage({
       components: {
         Auth,
-        SelectSheet
+        SelectSheet,
+        share
         // Mask
       },
       data () {
         return {
+          info: {},
+          orderNum: '',
           activityId: '',
           pictureArray: [],
           activityData: {},
           user: {},
           shareList: [],
-          groupInfo: {
-            product_pics: 'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg',
-            product_name: '菏泽特产100%纯牡丹籽油一级冷榨健康食用油天然无添加高档礼盒装高档礼…',
-            product_quantity: '2',
-            price_current: '10.00',
-            price_original: '20.00',
-            group_total: 3
-          },
           time_info: {
-            day: 4,
-            hour: 5,
-            minute: 34,
-            second: 44
+            day: 0,
+            hour: 0,
+            minute: 0,
+            second: 0
           },
           activity_type: 3,
           status: 0,
@@ -169,6 +166,7 @@ export default new BasePlatPage({
         },
         // 倒计时函数
         activityCountDown (timeStamp) {
+          console.log(timeStamp, 'timeStamp')
           countdown(timeStamp, () => {
             this.status = 0
           }, (d, h, m, s) => {
@@ -250,12 +248,10 @@ export default new BasePlatPage({
           // let { formId } = e.mp.detail
           // collectFormID({form_id: formId})
           this.$router.push({
-            path: './groupDetails',
+            path: '/pages/detail/main',
             query: {
-              group_no: this.group_no,
-              groupId: this.groupId,
-              product_uuid: this.product_uuid,
-              activity_id: this.activity_id
+              order: this.orderNum,
+              activityId: this.activityId
             }
           })
         },
@@ -290,20 +286,22 @@ export default new BasePlatPage({
           let text = this.groupText[Math.round(Math.random() * 3)]
           return {
             title: text,
-            path: '/groupModule/pages/groupInfo?group_no=' + this.group_no,
-            imageUrl: this.shareImageURL
+            path: '/pages/detail/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
+            imageUrl: this.pictureArray[0]
           }
         },
+        createPoster () {
+          this.$refs.share.onClickShow()
+        },
         onRefresh () {
-          this.getGroupActivityInfo({
-            group_no: this.group_no
-          })
+          this.getOrderDetail(this.orderNum)
         },
         async getOrderDetail (id) {
           const res = await getOrderByID({id})
           if (res.code === 200) {
             console.log(res.data, '这是活动详情')
             this.activityData = res.data.activity
+            this.info.title = res.data.activity.title
             this.user = res.data.user
             this.shareList = res.data.shareList
             this.activityId = res.data.activity.id

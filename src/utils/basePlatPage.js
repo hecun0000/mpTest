@@ -118,6 +118,11 @@ export default class basePlatPage {
         wx.hideShareMenu()
       }
     }
+    static getPageInstance () {
+      /* eslint-disable */
+      let pages = getCurrentPages()
+      return pages[pages.length - 1]
+    }
 
     onShareAppMessage (originOptions) {
       let pageShareOptions = this.onShareAppMessage ? this.onShareAppMessage() : {}

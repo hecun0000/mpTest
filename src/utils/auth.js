@@ -40,6 +40,7 @@ export default class auth {
             })
           },
           fail: res => {
+            wx.hideLoading()
             auth.isLiting = false
             resolve(false)
           }

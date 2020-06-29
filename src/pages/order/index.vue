@@ -14,15 +14,15 @@
       <van-tab title="已取消"></van-tab>
     </van-tabs> -->
     <div>
-      <div class="order-item">
+      <div class="order-item" v-for="(item, index) in list" :key="index">
         <van-card
           custom-class="yes-tag"
-          tag="已付款"
-          price="2.00"
-          origin-price="10.00"
+          :tag="item.activity && item.activity.hasPay === 'Y'?'已付款':'未付款'"
+          :price="item.activity.activityPrice"
+          :origin-price="item.activity.originalPrice"
           desc="描述信息"
-          title="2018秋冬新款男士休闲时尚军绿飞行夹克秋冬新款男"
-          :thumb="imageURL"
+          :title="item.activity.title"
+          :thumb="item.activity.headImg"
         ></van-card>
       </div>
     </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getOrder } from '@/api/order'
+import { getOrderList } from '@/api/order'
 import Auth from '@/components/NewAuth.vue'
 import BasePlatPage from '@/utils/basePlatPage'
 export default new BasePlatPage({
@@ -49,12 +49,15 @@ export default new BasePlatPage({
     wx.setNavigationBarTitle({
       title: '我的订单'
     })
+    this.getList()
   },
   methods: {
     async getList () {
-      const res = await getOrder()
+      const res = await getOrderList({
+        userId: wx.getStorageSync('openId')
+      })
       if (res.code === 200) {
-        // this.list = res.data
+        this.list = res.data
       }
     },
     jumpTo (url) {

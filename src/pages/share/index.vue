@@ -1,55 +1,23 @@
 <template>
   <div class="container">
-    <!-- <button class="action-item line" open-type="share" hover-class="none" >
-        转发给好友
-    </button> -->
     <!--用户-->
     <div class="user-box flex" v-if="is_down !== 1">
       <img class="avatar" :src="avatar" alt />
-      <div class="text">我是{{nickname}}，为我助力吧~</div>
+      <div class="text">我是{{user.nickname}}，为我助力吧~</div>
     </div>
     <!--砍价信息-->
     <div class="bargain-box">
       <div class="ware-box flex">
-        <img class="ware-img" :src="product_info.product_img" />
+        <img class="ware-img" :src="pictureArray[0]" />
         <div class="ware-info flex">
-          <div class="ware-name line-clamp-2">{{ product_info.product_name }}</div>
-          <!-- <div class="ware-count">X{{ product_info.quantity }}</div> -->
-          <!-- <div
-            class="sku-name line-clamp-1"
-          >{{ product_info.sku_uuid ? product_info.sku_name : '' }}</div> -->
-          <!-- <div class="ware-sale-price">
-            零售价：
-            <span>￥{{ product_info.origin_price }}</span>
-          </div>
-          <div class="ware-min-price">
-            最低价：
-            <span>￥</span>
-            <span>{{ product_info.min_price }}</span>
-          </div> -->
+          <div class="ware-name line-clamp-2">{{ activityData.title }}</div>
         </div>
       </div>
-      <!--砍价信息-->
-      <!-- <div class="bargain-info">
-        <div class="bar">
-          <div class="process" :style="{ width : percent + '%' }"></div>
-        </div>
-        <div class="bargain-price flex">
-          <div class="cut-price">
-            已砍
-            <span>{{ already_cut_price }}</span> 元
-          </div>
-          <div class="current-price">
-            现价
-            <span>{{ current_price }}</span> 元
-          </div>
-        </div>
-      </div> -->
       <img class="icon icon-water" src="./images/icon-water.png" alt />
     </div>
     <!--倒计时-->
     <div class="countdown flex" v-if="activity_status === 1 ">
-      <div class="text">离砍价结束还剩：</div>
+      <div class="text">离活动结束还剩：</div>
       <div class="time">
         <span class="digit">{{ time_info.days }}</span>
         <span class="dot">天</span>
@@ -60,47 +28,9 @@
         <span class="digit">{{ time_info.seconds }}</span>
       </div>
     </div>
-    <!--button-->
-    <!--活动进行中-->
-    <block v-if="activity_status === 1">
-      <button class="btn-down btn" v-if="is_down === 1 ">恭喜{{ nickname }}，已砍到最低价</button>
-      <form report-submit="true" @submit="actionSheet">
-        <button
-          class="btn animate"
-          formType="submit"
-          v-if="is_submit === 0 && is_self === 1 && is_down === 0"
-        >好友帮砍</button>
-      </form>
-      <button
-        class="btn btn-gray animate"
-        v-if="is_submit === 1 && is_self === 1 && is_down === 0 "
-      >好友帮砍</button>
-      <!--本人 砍到底价 未付款-->
-      <form report-submit="true" @submit="buy">
-        <button
-          class="buy-btn btn animate"
-          formType="submit"
-          v-if="is_self === 1 && is_down === 1 && order_state === 1"
-        >{{ product_info.min_price }}元购买</button>
-      </form>
-      <!--本人 订单状态为1 订单状态提交过-->
-      <button
-        class="buy-btn btn btn-gray animate"
-        v-if="is_self === 1 && order_state !== 1 "
-      >{{ product_info.min_price }}元购买</button>
-      <form report-submit="true" @submit="cut">
-        <button
-          class="btn animate"
-          formType="submit"
-          :class="{ 'btn-gray' : is_cut === 1 || is_down === 1 }"
-          v-if="is_self === 0 && is_down === 0"
-        >帮他砍一刀</button>
-      </form>
-      <button class="btn animate" v-if="is_self === 0" @click.stop="join">我要参加</button>
-    </block>
     <!--活动已结束-->
     <block v-if="activity_status === 0">
-      <div class="expired">活动过期啦</div>
+      <!-- <div class="expired">活动过期啦</div> -->
       <button class="btn btn-gray" v-if="is_self === 1 && is_down === 0">好友帮砍</button>
       <!-- <button class="btn btn-gray" v-if="is_self === 1 ">立即购买</button> -->
       <button class="btn btn-gray" v-if="is_self === 0 && is_down === 0">为好友助力</button>
@@ -121,24 +51,9 @@
         </div>
       </div>
     </div>
-    <!---->
-    <!-- <SelectSheet ref="selectSheet" :trade_no="trade_no"></SelectSheet> -->
-    <!--帮砍信息-->
-    <!-- <div class="b-box" v-if="showBoxModal">
-      <div class="content">
-        <img class="coin" src="https://static.ledouya.com/FhWC1lLyEAdEPS6QT7ZMkSwlARBr" alt />
-        <div class="text">
-          恭喜您，已砍掉
-          <span>{{ cut_price }}</span> 元
-        </div>
-        <div class="text">更多惊喜等着你</div>
-        <form report-submit="true" @submit="actionSheet">
-          <button class="share-btn" formType="submit">好友帮砍</button>
-        </form>
-      </div>
-      <img class="close-btn" src="./images/icon-close.png" @click.stop="closeModal" />
-    </div> -->
-    <Auth></Auth>
+      <SelectSheet ref="selectSheet" :orderNum="orderNum" @createPoster="createPoster"></SelectSheet>
+        <Auth></Auth>
+        <share ref="share" :info="info"/>
   </div>
 </template>
 
@@ -148,12 +63,27 @@ import BasePlatPage from '@/utils/basePlatPage'
 import countdown from '@/utils/countdown'
 // components
 import Auth from '@/components/NewAuth.vue'
+import { getOrderByID } from '@/api/order'
+import {getSwiper} from '../../api/activity'
+import SelectSheet from '../groupInfo/SelectSheet'
+import share from '../groupInfo/share'
+import store from '../../store'
+
 export default new BasePlatPage({
   components: {
-    Auth
+    Auth,
+    SelectSheet,
+    share
   },
   data () {
     return {
+      info: {},
+      orderNum: '',
+      activityId: '',
+      pictureArray: [],
+      activityData: {},
+      user: {},
+      shareList: [],
       // 头像
       avatar: '',
       // 昵称
@@ -214,6 +144,68 @@ export default new BasePlatPage({
   },
 
   methods: {
+    showActionSheet (e) {
+      // let { formId } = e.mp.detail
+      // collectFormID({form_id: formId})
+      this.$refs.selectSheet.openActionSheet()
+    },
+    joinGroup (e) { // 参团跳转到活动商品详情
+      // let { formId } = e.mp.detail
+      // collectFormID({form_id: formId})
+      this.$router.push({
+        path: '/pages/detail/main',
+        query: {
+          order: this.orderNum,
+          activityId: this.activityId
+        }
+      })
+    },
+    // 分享
+    onShareAppMessage () {
+      let text = this.groupText[Math.round(Math.random() * 3)]
+      return {
+        title: text,
+        path: '/pages/detail/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
+        imageUrl: this.pictureArray[0]
+      }
+    },
+    createPoster () {
+      this.$refs.share.onClickShow()
+    },
+    async getOrderDetail (id) {
+      const res = await getOrderByID({id})
+      if (res.code === 200) {
+        console.log(res.data, '这是活动详情')
+        this.activityData = res.data.activity
+        this.info.title = res.data.activity.title
+        this.user = res.data.user
+        this.shareList = res.data.shareList
+        this.activityId = res.data.activity.id
+        this.user.is_head = 1
+        this.shareList.push(this.user)
+        this.checkHasIn()
+        this.getSwiperList()
+        this.activityCountDown(new Date(res.data.activity.endDate).getTime() - Date.now())
+      }
+    },
+    // 判断是否在当前团中
+    checkHasIn () {
+      const current = wx.getStorageSync('openId')
+      const res = this.shareList.findIndex(item => item.openId === current)
+      this.is_self = res > -1 ? 1 : 2
+    },
+    async getSwiperList () {
+      const res = await getSwiper(this.activityId)
+      if (res.code === 200) {
+        this.pictureArray = res.data.map(item => {
+          item = store.state.baseURL + 'images/' + item.path
+          console.log(item)
+          return item
+        })
+        this.info.url = this.pictureArray[0]
+        console.log(this.pictureArray)
+      }
+    },
     // 好友砍价
     cut (e) {
       // let { formId } = e.mp.detail
@@ -244,15 +236,6 @@ export default new BasePlatPage({
         }
       })
     },
-    // 分享底部
-    actionSheet (e) {
-      // let { formId } = e.mp.detail
-      // collectFormID({ form_id: formId })
-      // this.showBoxModal = false
-      // this.$nextTick(() => {
-      //   this.$refs.selectSheet.openActionSheet()
-      // })
-    },
     // 弹窗关闭
     closeModal () {
       this.showBoxModal = false
@@ -274,185 +257,9 @@ export default new BasePlatPage({
         }
       )
     },
-    // 立即购买
-    buy (e) {
-      // wx.showLoading({
-      //   title: '处理中...',
-      //   mask: true
-      // })
-      // let { formId } = e.mp.detail
-      // collectFormID({ form_id: formId })
-
-      // // 结算
-      // settlement({
-      //   main_no: this.trade_no,
-      //   product_info: [
-      //     {
-      //       product_uuid: this.product_info.product_uuid,
-      //       sku_uuid: this.product_info.sku_uuid,
-      //       product_quantity: this.product_info.quantity
-      //     }
-      //   ],
-      //   activity_id: this.activity_id,
-      //   order_type: 3
-      // }).then(res => {
-      //   wx.hideLoading()
-      //   if (res.product_info && res.product_info.length) {
-      //     // 购物车
-      //     this.$store.state.buyList = [
-      //       {
-      //         product_uuid: this.product_info.product_uuid,
-      //         sku_uuid: this.product_info.sku_uuid,
-      //         product_quantity: this.product_info.quantity
-      //       }
-      //     ]
-      //     // 订单地址信息
-      //     this.$store.state.orderInfo = {
-      //       // 订单号
-      //       trade_no: this.trade_no,
-      //       // 活动类型
-      //       activity_type: 2,
-      //       // 活动id
-      //       activity_id: this.activity_id,
-      //       product_uuid: this.product_info.product_uuid,
-      //       sku_uuid: this.product_info.sku_uuid,
-      //       product_quantity: this.product_info.quantity,
-      //       // 订单类型, 3 砍价订单
-      //       order_type: 3,
-      //       // 订单信息，是否 ， 0 自提 ， 1 快递
-      //       logistics_type: res.logistics_type,
-      //       canUserMemberDiscount: !!(
-      //         res.member_discount &&
-      //         res.member_discount.allow_member_discount === 1
-      //       ),
-      //       booking: 0
-      //     }
-
-      //     if (Number(res.logistics.type) === 0) {
-      //       this.$store.state.orderInfo.phone =
-      //         res.logistics.auto_info.business_phone
-      //       this.$store.state.orderInfo.address =
-      //         res.logistics.auto_info.business_address
-      //     }
-
-      //     this.$router.push({
-      //       path: '/pages/cart/submitOrder',
-      //       query: {
-      //         booking: 0
-      //       }
-      //     })
-      //   }
-      // })
-    },
-    // 获取信息
-    getBargainActivityInfo (num) {
-      wx.showLoading({
-        title: '加载中...',
-        mask: true
-      })
-      // // 获取砍价信息
-      // getBargainInfo({
-      //   main_no: num
-      // }).then(res => {
-      //   wx.hideLoading()
-      //   if (res.info) {
-      //     // 活动订单号
-      //     this.trade_no = res.info.main_no
-      //     // 活动id
-      //     this.activity_id = res.info.activity_id
-      //     // 活动状态 1 进行中 0 已结束
-      //     this.activity_status = Number(res.info.activity_status)
-      //     // 用户名
-      //     this.avatar = res.info.avatar
-      //     // 头像
-      //     this.nickname = res.info.user_name
-      //     // 商品信息
-      //     this.product_info = {
-      //       //
-      //       product_img: res.info.product_thumbnail,
-      //       // 商品名称
-      //       product_name: res.info.product_name,
-      //       // 商品 id
-      //       product_uuid: res.info.product_uuid,
-      //       // sku 名称
-      //       sku_name: res.info.sku_name,
-      //       // sku id
-      //       sku_uuid: res.info.sku_uuid,
-      //       // 数量
-      //       quantity: res.info.product_quantity,
-      //       // 最低价
-      //       min_price: parseFloat(res.info.floor_price / 100).toFixed(2),
-      //       // 零售价
-      //       origin_price: parseFloat(res.info.price_current / 100).toFixed(2)
-      //     }
-      //     // 商品百分比
-      //     this.percent = res.info.percent
-      //     // 已砍
-      //     this.already_cut_price = parseFloat(
-      //       res.info.already_cut / 100
-      //     ).toFixed(2)
-      //     // 当前
-      //     this.current_price = parseFloat(
-      //       res.info.order_actual_payment / 100
-      //     ).toFixed(2)
-      //     // 是否本人  0 非本人 ， 1 本人
-      //     this.is_self = Number(res.info.is_self)
-      //     // 是否砍到底价 0 未到 1 砍到底价
-      //     this.is_down = Number(res.info.status)
-      //     // 是否已经砍过 0 没砍过 1 砍过
-      //     this.is_cut = Number(res.info.is_cut)
-      //     // 是否已经提交订单 0 未提交 1提交
-      //     this.is_submit = Number(res.info.is_submit)
-      //     // 倒计时
-      //     this.timeStamp = Number(res.info.count_down)
-      //     // 活动进行中，且订单未关闭
-      //     if (this.activity_status === 1 && this.timeStamp > 0) { this.activityCountdown() }
-      //     // 订单状态
-      //     //
-      //     if ((this.timeStamp - new Date().getTime() / 1000) < 0 || res.info.state === 6) this.activity_status = 0
-      //     // 订单状态
-      //     this.order_state = Number(res.info.state)
-
-      //     // 显示砍价
-      //     if (this.$store.state.first_emit_cut && this.is_self === 1) {
-      //       this.cut_price = parseFloat(
-      //         res.info.first_cut_amount / 100
-      //       ).toFixed(2)
-      //       this.showBoxModal = true
-      //       this.$store.state.first_emit_cut = false
-      //     }
-      //   }
-      //   if (res.help && res.help.length) {
-      //     this.cutList = []
-      //     for (let i = 0; i < res.help.length; i++) {
-      //       this.cutList.push({
-      //         avatar: res.help[i].avatar,
-      //         nickName: res.help[i].user_name,
-      //         cut_price: parseFloat(res.help[i].cut_amount / 100).toFixed(2)
-      //       })
-      //     }
-      //   }
-      //   // 获取分享图片
-      //   this.shareImageURL = genereateShareImage({
-      //     trade_no: this.trade_no,
-      //     type: 3
-      //   })
-      // })
-    },
     // 下拉刷新
     onRefresh () {
       this.getBargainActivityInfo(this.trade_no)
-    },
-    onShareAppMessage () {
-      let text = this.cutText[Math.round(Math.random() * 2)]
-      return {
-        title: text,
-        path:
-          '/bargainModule/pages/bargainInfo?trade_no=' +
-          this.trade_no +
-          '&from=share',
-        imageUrl: this.shareImageURL
-      }
     }
   },
 
@@ -486,7 +293,7 @@ export default new BasePlatPage({
 })
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 page {
   background: #fa3c3d;
 }

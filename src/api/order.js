@@ -3,6 +3,9 @@ import fly from '@/utils/fly'
 export function getOrder (data) {
   return fly.get('/order', data)
 }
+export function getOrderList (data) {
+  return fly.get('/order/condition', data)
+}
 
 // 生成订单
 export function createOrder (data) {

@@ -6,6 +6,7 @@
         label="姓名"
         placeholder="请输入姓名"
         :error-message="error.name"
+        @change="onChangeName"
         input-align="right"
       />
       <van-field
@@ -15,6 +16,7 @@
         input-align="right"
         placeholder="请输入手机号"
         :error-message="error.phone"
+        @change="onChangePhone"
       />
       <van-field
         :value="form.gender"
@@ -121,6 +123,7 @@ export default new BasePlatPage({
 
     valiate () {
       let result = true
+      console.log(this.form, 'this.form')
       if (!this.form.name) {
         this.error.name = '请输入姓名'
         result = false
@@ -149,6 +152,7 @@ export default new BasePlatPage({
       return result
     },
     handleSave () {
+      console.log(11)
       if (this.valiate()) {
         this.setInfo()
       }
@@ -160,8 +164,20 @@ export default new BasePlatPage({
       const res = await setUserInfoById(data)
 
       if (res.code === 200) {
-        wx.switchTab({ url: '/pages/my/main' })
+        wx.navigateBack({
+          delta: 1, // 返回上一级页面。
+          success: function () {
+            console.log('成功！')
+          }
+        })
       }
+    },
+    onChangeName (e) {
+      console.log(e)
+      this.form.name = e.mp.detail
+    },
+    onChangePhone (e) {
+      this.form.phone = e.mp.detail
     },
     onChange () {},
     onChangeGrade () {

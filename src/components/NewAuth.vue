@@ -48,6 +48,7 @@ export default new BaseComponent({
               encryptedData: res.encryptedData,
               iv: res.iv
             }).then(res => {
+              wx.hideNavigationBarLoading()
               console.log(res, 'ddddddd')
               // store.state.userInfo.avatar = res.avatarUrl
               // store.state.userInfo.nickName = res.nickName

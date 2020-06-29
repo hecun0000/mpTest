@@ -19,18 +19,14 @@
         <button class="action-item" hover-class="none" @click.stop="closeActionSheet">取消</button>
       </div>
     </div>
-    <Poster ref="poster" :poster="poster"></Poster>
   </div>
 </template>
 
 <script>
 import BaseComponent from '@/utils/baseComponent'
-// components
-// import Poster from './Poster'
-// api
-// import { generatePoster } from '@/api/activity'
+
 export default new BaseComponent({
-  props: ['trade_no'],
+  props: ['orderNum'],
   data () {
     return {
       poster: '',
@@ -55,13 +51,8 @@ export default new BaseComponent({
     },
     // 生成海报
     createPoster () {
-      // this.closeActionSheet()
-      // this.poster = generatePoster({
-      //   trade_no: this.trade_no
-      // })
-      // this.$nextTick(() => {
-      //   this.$refs.poster.openPoster()
-      // })
+      this.closeActionSheet()
+      this.$emit('createPoster')
     }
   },
   onLoad () {},
