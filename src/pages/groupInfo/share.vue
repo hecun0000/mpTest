@@ -189,7 +189,8 @@ export default {
         strArr.push(a)
       }
       let textTop = this.width + 20
-      for (let j = 0; j < 2; j++) {
+      const len = strArr.length < 2 ? strArr.length : 2
+      for (let j = 0; j < len; j++) {
         console.log(str, strArr[j], textTop, 'ress')
         ctx.fillText(strArr[j], 10 * this.dpr, textTop)
         textTop += fontSize * 1.5
