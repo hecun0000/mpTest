@@ -15,8 +15,11 @@
       </div>
       <img class="icon icon-water" src="./images/icon-water.png" alt />
     </div>
+
+    <!--活动已结束-->
+    <block>
     <!--倒计时-->
-    <div class="countdown flex">
+    <div class="countdown flex" v-if="!overdue">
       <div class="text">离活动结束还剩：</div>
       <div class="time">
         <span class="digit">{{ time_info.days }}</span>
@@ -28,13 +31,12 @@
         <span class="digit">{{ time_info.seconds }}</span>
       </div>
     </div>
-    <!--活动已结束-->
-    <block v-if="activity_status === 0">
-      <!-- <div class="expired">活动过期啦</div> -->
-      <button class="btn"  @click="showActionSheet">邀请好友助力</button>
-      <!-- <button class="btn btn-gray" v-if="is_self === 1 ">立即购买</button> -->
-      <button class="btn"  @click="handAdd">为好友助力</button>
-      <button class="btn" @click="handleSend">我要发起助力</button>
+    <div v-else class="expired">活动过期啦</div>
+      <button class="btn" :class="{'btn-gray':overdue}"  @click="showActionSheet">邀请好友助力</button>
+      <button class="btn" v-if="!isMy" :class="{'btn-gray':overdue || is_self === 1}"  @click="handAdd">
+        {{ is_self === 1 ? "已经助力过": "为好友助力" }}
+      </button>
+      <button class="btn" :class="{'btn-gray':overdue}" @click="handleSend">我要发起助力</button>
     </block>
     <!--帮砍榜-->
     <div class="rate-box">
@@ -78,6 +80,8 @@ export default new BasePlatPage({
   },
   data () {
     return {
+      isMy: false,
+      is_self: 1, // 1 表示在其中 2 表示不在
       info: {},
       orderNum: '',
       activityId: '',
@@ -85,32 +89,6 @@ export default new BasePlatPage({
       activityData: {},
       user: {},
       shareList: [],
-      // 头像
-      avatar: '',
-      // 昵称
-      nickname: '禾寸',
-      // 活动id
-      activity_id: '神鼎飞丹砂',
-      // 活动状态 1 进行中 0 已结束
-      activity_status: 0,
-      // 订单号
-      trade_no: '',
-      // 砍价弹窗
-      showBoxModal: false,
-      // 砍价
-      cut_price: '0.00',
-      // 商品信息
-      product_info: {
-        product_img: 'https://img11.360buyimg.com/n1/s450x450_jfs/t1/131421/9/1916/444202/5ee0d3fbE8d0281f3/11faf05514ecc347.jpg',
-        product_name: '菏泽特产100%纯牡丹籽油一级冷榨健康食用油天然无添加高档礼盒装高档礼…',
-        price_current: '10.00',
-        price_original: '20.00'
-      },
-      // 已砍
-      already_cut_price: '0.00',
-      // 现价
-      current_price: '0.00',
-      // 百分比
       percent: 0,
       // 定时器
       timer: null,
@@ -123,28 +101,27 @@ export default new BasePlatPage({
         minutes: 0,
         seconds: 0
       },
-      // 订单状态
-      order_state: 1,
-      // 是否是本人 0 非本人 ， 1 本人
-      is_self: 0,
-      // 是否砍到底价 0 未到 1 砍到底价
-      is_down: 0,
-      // 是否砍过 0 未砍 1 砍过
-      is_cut: 0,
-      // 是否提交 0 未提交 1 提交
-      is_submit: 0,
-      // 帮砍帮
-      cutList: [],
       cutText: [
         '我正在抢购商品，快来帮我助力啊~',
         '求助力！关系好不好，就看这一次了！',
-        '得到好物的机会，就差你你的助力了～'
+        '得到好物的机会，就差你的助力了～'
       ],
-      shareImageURL: ''
+      shareImageURL: '',
+      overdue: false, // true 为过期
+      loading: false
     }
   },
   methods: {
+    // 判断活动是否过期
+    isEnd (date) {
+      const now = Date.now()
+      const dateTimes = new Date(date).getTime()
+      console.log(now, dateTimes, now > dateTimes)
+      this.overdue = now > dateTimes
+    },
+    // 发起助力
     handleSend () {
+      if (this.overdue) return
       this.$router.push({
         path: '/pages/detail/main',
         query: {
@@ -152,34 +129,32 @@ export default new BasePlatPage({
         }
       })
     },
+    // 为好友助力
     async handAdd () {
+      if (this.overdue) return
+      if (this.is_self === 1) return
+
+      if (this.loading) return
+      this.loading = true
+
       const result = await addShare({
         orderId: this.orderNum,
         userId: wx.getStorageSync('openId')
       })
+      this.loading = false
+
       if (result.code === 200) {
         console.log('参加助力')
+        this.getOrderDetail(this.orderNum)
       }
     },
     showActionSheet (e) {
-      // let { formId } = e.mp.detail
-      // collectFormID({form_id: formId})
+      if (this.overdue) return
       this.$refs.selectSheet.openActionSheet()
-    },
-    joinGroup (e) { // 参团跳转到活动商品详情
-      // let { formId } = e.mp.detail
-      // collectFormID({form_id: formId})
-      this.$router.push({
-        path: '/pages/detail/main',
-        query: {
-          order: this.orderNum,
-          activityId: this.activityId
-        }
-      })
     },
     // 分享
     onShareAppMessage () {
-      let text = this.groupText[Math.round(Math.random() * 3)]
+      let text = this.cutText[Math.round(Math.random() * 2)]
       return {
         title: text,
         path: '/pages/detail/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
@@ -187,6 +162,7 @@ export default new BasePlatPage({
       }
     },
     createPoster () {
+      if (this.overdue) return
       this.$refs.share.onClickShow()
     },
     async getOrderDetail (id) {
@@ -199,11 +175,15 @@ export default new BasePlatPage({
         this.shareList = res.data.shareList
         this.activityId = res.data.activity.id
         this.user.is_head = 1
-        this.shareList.push(this.user)
+        this.checkIsMy(res.data.user.openId)
+        // 当前人是不是
         this.checkHasIn()
         this.getSwiperList()
         console.log(this, this.activityCountDown, ' this.activityCountDown')
+        // 倒计时
         this.activityCountDown(new Date(res.data.activity.endDate).getTime() / 1000)
+        // 判断当前活动是不是过期
+        this.isEnd(res.data.activity.endDate)
       }
     },
     // 判断是否在当前团中
@@ -211,6 +191,10 @@ export default new BasePlatPage({
       const current = wx.getStorageSync('openId')
       const res = this.shareList.findIndex(item => item.openId === current)
       this.is_self = res > -1 ? 1 : 2
+    },
+    // 检查是不是自己的助力活动
+    checkIsMy (openid) {
+      this.isMy = openid === wx.getStorageSync('openId')
     },
     async getSwiperList () {
       const res = await getSwiper(this.activityId)
@@ -223,40 +207,6 @@ export default new BasePlatPage({
         this.info.url = this.pictureArray[0]
         console.log(this.pictureArray)
       }
-    },
-    // 好友砍价
-    cut (e) {
-      // let { formId } = e.mp.detail
-      // collectFormID({ form_id: formId })
-      // if (this.is_cut === 1 || this.is_down === 1) return
-      // wx.showLoading({
-      //   title: '加载中',
-      //   mask: true,
-      //   icon: 'none'
-      // })
-      // cutProduct({
-      //   main_no: this.trade_no
-      // }).then(res => {
-      //   wx.hideLoading()
-      //   if (res.cut_amount) {
-      //     this.cut_price = parseFloat(res.cut_amount / 100).toFixed(2)
-      //     this.showBoxModal = true
-      //     this.getBargainActivityInfo(this.trade_no)
-      //   }
-      // })
-    },
-    // 参加
-    join () {
-      this.$router.push({
-        path: './index',
-        query: {
-          activity_id: this.activity_id
-        }
-      })
-    },
-    // 弹窗关闭
-    closeModal () {
-      this.showBoxModal = false
     },
     // 倒计时
     activityCountDown (timeStamp) {
@@ -303,11 +253,7 @@ export default new BasePlatPage({
   },
 
   onLoad (params) {
-    // 分享给好友或者朋友圈
-    // if (params.trade_no) {
-    //   this.trade_no = params.trade_no
-    //   this.getBargainActivityInfo(this.trade_no)
-    // }
+    console.log(params.scene, 'params.sceneparams.sceneparams.scene')
     // // 小程序扫码进入
     // if (params.scene) {
     //   let mainId = decodeURIComponent(params.scene).split('_')[2]
@@ -317,12 +263,6 @@ export default new BasePlatPage({
       this.orderNum = params.orderNum
       this.getOrderDetail(this.orderNum)
     }
-  },
-
-  mounted () {},
-
-  onUnload () {
-    this.showBoxModal = false
   }
 })
 </script>

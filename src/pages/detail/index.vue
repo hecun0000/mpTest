@@ -53,7 +53,7 @@
           <van-goods-action-icon icon="home-o" text="首页" @click="jumpTo('/pages/home/main')"/>
           <van-goods-action-icon icon="user-o" text="我的" @click="jumpTo('/pages/my/main')"/>
           <van-goods-action-button text="分享活动" type="warning" open-type="share"/>
-          <van-goods-action-button :text="activityData.type === 'group'? '发起拼团':'发起助力'" @click="pay"/>
+          <van-goods-action-button :text="activityData.type === 'group'?( order?'参与拼团': '发起拼团'):'发起助力'" @click="pay"/>
         </van-goods-action>
         <share ref="share" :info="info"></share>
         <!-- <h-dialog ref="dialog"/> -->
@@ -95,7 +95,9 @@ export default new BasePlatPage({
       },
       time: 0,
       qaList: [],
-      userInfo: {}
+      userInfo: {},
+      loading: false,
+      order: ''
     }
   },
   onShow () {
@@ -113,12 +115,10 @@ export default new BasePlatPage({
     console.log(params, params.orderNum)
     if (params.orderNum) {
       this.order = params.orderNum
-      // this.getBargainActivityInfo(this.trade_no)
     }
     if (params.scene) {
       let mainId = decodeURIComponent(params.scene).split('_')[2]
       console.log(mainId)
-      // this.getBargainActivityInfo(main_id)
     }
   },
   onShareAppMessage () {
@@ -175,6 +175,8 @@ export default new BasePlatPage({
       }
     },
     async pay () {
+      if (this.loading) return
+      this.loading = true
       const resultUserInfo = await this.checkUserInfo()
       console.log('resultUserInfo', resultUserInfo)
       console.log('this.activityId', this.activityId)
@@ -198,8 +200,9 @@ export default new BasePlatPage({
           signType,
           paySign,
           success: async function (res) {
+            self.loading = false
             console.log(res, 'eeeeeeee')
-            const orderNum = orderId
+            let orderNum = orderId
             // console.log(orderNum, 'orderNum', self.activityData.type)
             if (self.activityData.type === 'group') {
               console.log(self.order, 'this.order 生成拼团')
@@ -211,6 +214,7 @@ export default new BasePlatPage({
 
                 console.log(result, '参加拼团')
               }
+              if (self.order) orderNum = self.order
               // 拼团
               wx.navigateTo({url: '/pages/groupInfo/main?orderNum=' + orderNum})
             } else {

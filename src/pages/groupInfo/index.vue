@@ -17,7 +17,7 @@
             </div>
             <!--团情况-->
             <div class="group-info">
-                <div class="text success" v-if="status===1">
+                <div class="text success" v-if="status === 1">
                     <img class="fail-success" src="./images/success.png" alt="">
                     <div class="explain">
                         <img src="./images/label.png" class="rotate" alt="">
@@ -25,7 +25,7 @@
                         <img src="./images/label.png" alt="">
                     </div>
                 </div>
-                <div class="text fail" v-if="status===2">
+                <div class="text fail"  v-if="status === 2">
                     <img class="fail-success" src="./images/fail.png" alt="">
                     <div class="explain">
                         <img src="./images/label.png" class="rotate" alt="">
@@ -34,13 +34,7 @@
                     </div>
                 </div>
 
-                <div class="text" v-if="status===0">
-                    <!-- 还差{{groupInfo.people_dis}}人成团，
-                    <span>{{time_info.day}}</span> ：
-                    <span>{{time_info.hour}}</span> ：
-                    <span>{{time_info.minute}}</span> ：
-                    <span style="margin-right: 20rpx">{{time_info.second}}</span>
-                    结束 -->
+                <div class="text" v-if="status === 0">
                     <div class="explain">
                         <img src="./images/label.png" class="rotate" alt="">
                         <div>距结束</div>
@@ -63,12 +57,12 @@
                     </div>
                 </div>
                 <div class="group-person">
-                    <div class="item" v-for="(user,index) in shareList" :key="index">
+                    <div class="item" v-for="(user,index) in displayUserList" :key="index">
                         <img class="avatar" :src="user.avatarUrl" alt="">
                         <div class="special" v-if="user.is_head==1">团长</div>
                     </div>
-                    <div class="dot" v-if="activityData.teamCoun!=0||hasMoreUser">......</div>
-                    <div class="item vacant" v-if="activityData.teamCoun!=0">?</div>
+                  <div class="dot" v-if="activityData.teamCount!=0||hasMoreUser">......</div>
+                    <div class="item vacant" v-if="activityData.teamCount!=0">?</div>
                     <div class="item" v-if="status===1&&hasMoreUser">
                         <img class="avatar" :src="lastUser.avatar" alt="">
                         <div class="special" v-if="lastUser.is_head==1">团长</div>
@@ -78,19 +72,19 @@
         </div>
         <!--btn-->
 
-        <div  @click="joinGroup" v-if="status === 0">
+        <div  @click="joinGroup" v-if="status === 0  && is_self == 2 && activityData.teamCount > 0">
             <button class="btn" >我要参团</button>
         </div>
-        <!-- <div  @click="createGroup" v-if="status === 1 || groupInfo.people_dis <= 0">
+        <div  @click="createGroup" v-if="status === 1 || activityData.teamCount <= 0">
             <button class="btn"  formType="click">再开一团</button>
-        </div> -->
+        </div>
         <div  @click="showActionSheet" v-if="status === 0 && is_self == 1">
             <button class="btn">邀请好友参团</button>
         </div>
 
-        <div  @click="handlePay" v-if="status === 0 && is_self == 1 && payment_status===1">
-            <button class="btn"  >去支付</button>
-        </div>
+        <!-- <div  @click="handlePay" v-if="status === 0 && is_self == 1 && payment_status===1">
+            <button class="btn">去支付</button>
+        </div> -->
 
         <SelectSheet ref="selectSheet" :orderNum="orderNum" @createPoster="createPoster"></SelectSheet>
         <Auth></Auth>
@@ -106,11 +100,8 @@ import SelectSheet from './SelectSheet'
 import share from './share'
 import Auth from '@/components/NewAuth'
 
-// import Mask from '@/components/Mask'
-// api
-// import { groupDetail } from '@/api/group'
 import { getOrderByID } from '@/api/order'
-// import { collectFormID } from '@/api/common'
+
 import store from '../../store'
 import {getSwiper} from '../../api/activity'
 import countdown from '@/utils/countdown'
@@ -123,12 +114,14 @@ export default new BasePlatPage({
       },
       data () {
         return {
+          overdue: false,
           info: {},
           orderNum: '',
           activityId: '',
           pictureArray: [],
           activityData: {},
           user: {},
+          displayUserList: [],
           shareList: [],
           time_info: {
             day: 0,
@@ -136,32 +129,22 @@ export default new BasePlatPage({
             minute: 0,
             second: 0
           },
-          activity_type: 3,
           status: 0,
-          mask: {
-            state: false,
-            anim: false
-          },
-          trade_no: '',
           is_self: 2, // 1 该用户是团成员, 2 不是
-          activity_id: '',
-          product_uuid: '',
-          group_no: '',
-          property: '',
-          userList: [],
-          lastUser: {},
           hasMoreUser: false,
-          params: {},
           groupText: ['就差你了，快来和我组团吧~', '我都拼了，你还不来么~', '再不来拼就结束了，好伤心~', '人生需要拼，爱拼才会赢！快来等你哦~'],
-          shareImageURL: '',
-          payment_status: 1, // 支付状态 1---> 未支付 2---> 已支付
-          order_no: ''
+          payment_status: 1 // 支付状态 1---> 未支付 2---> 已支付
         }
       },
       methods: {
+        // 判断活动是否过期
+        isEnd (date) {
+          const now = Date.now()
+          const dateTimes = new Date(date).getTime()
+          console.log(now, dateTimes, now > dateTimes)
+          this.overdue = now > dateTimes
+        },
         showActionSheet (e) {
-          // let { formId } = e.mp.detail
-          // collectFormID({form_id: formId})
           this.$refs.selectSheet.openActionSheet()
         },
         // 倒计时函数
@@ -178,106 +161,13 @@ export default new BasePlatPage({
             }
           })
         },
-        share () { // 分享
-          this.mask.state = true
-          this.mask.anim = true
-          this.mask.data = {
-            product_uuid: this.product_uuid,
-            price_current: this.activity_price,
-            price_original: this.price_original,
-            activity_type: 0,
-            activity_id: 0
-          }
-        },
-        getGroupActivityInfo (params) {
-          let obj = {}
-          if (params.group_no) {
-            obj.group_no = params.group_no
-          } else if (params.groupId) {
-            obj.groupId = params.groupId
-          }
-          // groupDetail(obj).then(res => {
-          //   this.groupInfo = res
-          //   this.payment_status = res.payment_status - 0
-          //   if (this.payment_status === 1) {
-          //     wx.hideShareMenu()
-          //   } else {
-          //     wx.showShareMenu()
-          //   }
-          //   this.trade_no = this.order_no = res.main_no
-          //   this.groupInfo.price_current = Number(res.price_current / 100).toFixed(2)
-          //   this.groupInfo.price_original = Number(res.price_original / 100).toFixed(2)
-          //   this.status = parseInt(res.status)
-          //   if (!this.status) {
-          //     this.activityCountDown(res.expiry_time)
-          //   }
-          //   this.activity_id = res.activity_id
-          //   this.product_uuid = res.product_uuid
-          //   this.group_no = res.group_no
-          //   this.userList = res.user_info
-          //   if (this.userList.length > 6 && this.status === 0) { // 进行中
-          //     this.userList = this.userList.slice(0, 6)
-          //   } else if (this.userList.length > 6 && this.status === 1) { // 成功
-          //     this.hasMoreUser = true
-          //     this.lastUser = this.userList[this.userList.length - 1]
-          //     this.userList = this.userList.slice(0, 6)
-          //   }
-          //   if (res.product_property.length > 0) {
-          //     this.property = ''
-          //     for (let j = 0; j < res.product_property.length; j++) {
-          //       let temp = res.product_property[j]
-          //       this.property += temp.attr_value + '_'
-          //     }
-          //     this.property = this.property.slice(0, this.property.length - 1)
-          //   }
-          //   // 判断用户是否是自己团内成员
-          //   let utoken = this.$store.state.userInfo.utoken
-          //   let userList = res.user_info
-          //   for (let i = 0; i < userList.length; i++) {
-          //     let user = userList[i]
-          //     if (user.utoken === utoken) {
-          //       this.is_self = 1
-          //       break
-          //     }
-          //   }
-          //   // 获取分享图片
-          //   this.shareImageURL = genereateShareImage({ trade_no: this.group_no, type: 2 })
-          // })
-        },
-        joinGroup (e) { // 参团跳转到活动商品详情
-          // let { formId } = e.mp.detail
-          // collectFormID({form_id: formId})
+        joinGroup (e) {
+          // 参团跳转到活动商品详情
           this.$router.push({
             path: '/pages/detail/main',
             query: {
               orderNum: this.orderNum,
               id: this.activityId
-            }
-          })
-        },
-        createGroup (e) {
-          // let { formId } = e.mp.detail
-          // collectFormID({form_id: formId})
-          this.$router.replace({
-            path: './groupDetails',
-            query: {
-              product_uuid: this.product_uuid,
-              activity_id: this.activity_id
-            }
-          })
-        },
-        // 去支付
-        handlePay (e) {
-          // let { formId } = e.mp.detail
-          // collectFormID({form_id: formId})
-          this.$router.push({
-            path: '/pages/cart/payment',
-            query: {
-              order_no: this.order_no,
-              group_no: this.group_no,
-              order_type: '2',
-              is_self: 1,
-              amount: this.groupInfo.price_current
             }
           })
         },
@@ -289,7 +179,6 @@ export default new BasePlatPage({
             path: '/pages/groupInfo/main?orderNum=' + this.orderNum,
             imageUrl: this.pictureArray[0]
           }
-          // path: '/pages/groupInfo/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
         },
         createPoster () {
           this.$refs.share.onClickShow()
@@ -307,10 +196,27 @@ export default new BasePlatPage({
             this.shareList = res.data.shareList
             this.activityId = res.data.activity.id
             this.user.is_head = 1
-            this.shareList.push(this.user)
+            this.shareList.unshift(this.user)
+            if (this.activityData.teamCount > this.shareList.length && !this.overdue) {
+              // 进行中
+              this.status = 0
+            } else if (this.tactivityData.teamCount === this.shareList.length) {
+              this.status = 1
+            } else if (this.activityData.teamCount > this.shareList.length && this.overdue) {
+              this.status = 2
+            }
+            if (this.status === 0) { // 进行中
+              this.displayUserList = this.shareList.slice(0, 6)
+            } else if (this.status === 1) { // 成功
+              this.hasMoreUser = true
+              this.shareList = this.shareList[this.userList.length - 1]
+              this.displayUserList = this.shareList.slice(0, 6)
+            }
             this.checkHasIn()
             this.getSwiperList()
             this.activityCountDown(new Date(res.data.activity.endDate).getTime() / 1000)
+            // 判断当前活动是不是过期
+            this.isEnd(res.data.activity.endDate)
           }
         },
         // 判断是否在当前团中
@@ -334,23 +240,13 @@ export default new BasePlatPage({
       },
       onLoad (params) {
         this.params = params
-        console.log(params, 'paramsparamsparamsparamsparams')
-        // wx.hideShareMenu()
-        // if (params.scene) {
-        //   let groupId = decodeURIComponent(params.scene).split('_')[2]
-        //   this.getOrderDetail(groupId)
-        // } else
-        if (params.orderNum) {
+        if (params.scene) {
+          this.orderNum = decodeURIComponent(params.scene).split('_')[2]
+          this.getOrderDetail(this.orderNum)
+        } else if (params.orderNum) {
           this.orderNum = params.orderNum
           this.getOrderDetail(this.orderNum)
         }
-      },
-      mounted () {
-        console.log(this.$root.$mp.query)
-        this.trade_no = this.$root.$mp.query.order_no
-        this.group_no = this.$root.$mp.query.group_no
-
-        console.log(this.trade_no)
       }
     })
 </script>
