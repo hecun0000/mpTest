@@ -38,7 +38,7 @@
 
         <!--商品名称  经典模式-->
         <div class="base-info">
-            <div class="tag">预约</div>
+            <div class="tag">{{activityData.type === 'group' ? '拼团':"助力"}}</div>
             <div class="title line-clamp-2">{{activityData.title}}</div>
         </div>
     

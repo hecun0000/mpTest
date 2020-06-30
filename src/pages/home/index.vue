@@ -19,11 +19,16 @@ export default {
       listData: []
     }
   },
-
   components: {
     card
   },
-
+  onPullDownRefresh () {
+    console.log('下拉')
+    this.getList()
+    setTimeout(() => {
+      wx.stopPullDownRefresh()
+    }, 1500)
+  },
   methods: {
     async getList () {
       const res = await getAtivity()

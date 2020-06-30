@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-overlay :show="show" @click="onClickHide" >
+    <van-overlay :show="show" >
       <div class="poper-box">
 
       </div>
@@ -207,6 +207,7 @@ export default {
       ctx.fillText(name, padding * this.dpr + 20 + aWidth, this.height - padding * this.dpr - fontSize * this.dpr / 2)
     },
     downloadImg () {
+      console.log('downloadImg')
       const canvas = this.canvas
       const self = this
       wx.canvasToTempFilePath({
@@ -220,6 +221,9 @@ export default {
             filePath: self.imgUrl,
             success (res) {
               console.log(res, '图片已保存到相册，赶紧晒')
+            },
+            fail (res1) {
+              console.log(res1, '图片已保存到相册，赶紧晒 --- 失败')
             }
           })
         },

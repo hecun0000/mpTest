@@ -21,7 +21,7 @@ function getEntry (rootSrc) {
     var key = relative(rootSrc, file).replace('.js', '');
     map[key] = file;
   })
-   return map;
+  return map;
 }
 
 const appEntry = { app: resolve('./src/main.js') }

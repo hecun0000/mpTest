@@ -2,8 +2,8 @@
   <div class="container">
     <!--用户-->
     <div class="user-box flex" v-if="is_down !== 1">
-      <img class="avatar" :src="avatar" alt />
-      <div class="text">我是{{user.nickname}}，为我助力吧~</div>
+      <img class="avatar" :src="user.avatarUrl" alt />
+      <div class="text">我是{{user.nickName}}，为我助力吧~</div>
     </div>
     <!--砍价信息-->
     <div class="bargain-box">
@@ -16,7 +16,7 @@
       <img class="icon icon-water" src="./images/icon-water.png" alt />
     </div>
     <!--倒计时-->
-    <div class="countdown flex" v-if="activity_status === 1 ">
+    <div class="countdown flex">
       <div class="text">离活动结束还剩：</div>
       <div class="time">
         <span class="digit">{{ time_info.days }}</span>
@@ -31,10 +31,10 @@
     <!--活动已结束-->
     <block v-if="activity_status === 0">
       <!-- <div class="expired">活动过期啦</div> -->
-      <button class="btn btn-gray" v-if="is_self === 1 && is_down === 0">好友帮砍</button>
+      <button class="btn"  @click="showActionSheet">邀请好友助力</button>
       <!-- <button class="btn btn-gray" v-if="is_self === 1 ">立即购买</button> -->
-      <button class="btn btn-gray" v-if="is_self === 0 && is_down === 0">为好友助力</button>
-      <button class="btn btn-gray" v-if="is_self === 0 ">我要参加</button>
+      <button class="btn"  @click="handAdd">为好友助力</button>
+      <button class="btn" @click="handleSend">我要发起助力</button>
     </block>
     <!--帮砍榜-->
     <div class="rate-box">
@@ -42,12 +42,12 @@
       <div class="lf dot"></div>
       <div class="rt dot"></div>
       <div class="list">
-        <div class="item flex" v-for="(item,index) in cutList" :key="index">
+        <div class="item flex" v-for="(item,index) in shareList" :key="index">
           <div class="person flex">
-            <img class="avatar" :src="item.avatar" alt />
+            <img class="avatar" :src="item.avatarUrl" alt />
             <div class="nick-name">{{ item.nickName }}</div>
           </div>
-          <div class="text">帮砍{{ item.cut_price }}元</div>
+          <!-- <div class="text">帮砍{{ item.cut_price }}元</div> -->
         </div>
       </div>
     </div>
@@ -68,6 +68,7 @@ import {getSwiper} from '../../api/activity'
 import SelectSheet from '../groupInfo/SelectSheet'
 import share from '../groupInfo/share'
 import store from '../../store'
+import { addShare } from '../../api/order'
 
 export default new BasePlatPage({
   components: {
@@ -135,15 +136,31 @@ export default new BasePlatPage({
       // 帮砍帮
       cutList: [],
       cutText: [
-        '我正在抢购商品，快来帮我砍价啊~',
-        '求帮砍！关系好不好，一刀见分晓！',
-        '得到好物的机会，就差你这刀了～'
+        '我正在抢购商品，快来帮我助力啊~',
+        '求助力！关系好不好，就看这一次了！',
+        '得到好物的机会，就差你你的助力了～'
       ],
       shareImageURL: ''
     }
   },
-
   methods: {
+    handleSend () {
+      this.$router.push({
+        path: '/pages/detail/main',
+        query: {
+          id: this.activityId
+        }
+      })
+    },
+    async handAdd () {
+      const result = await addShare({
+        orderId: this.orderNum,
+        userId: wx.getStorageSync('openId')
+      })
+      if (result.code === 200) {
+        console.log('参加助力')
+      }
+    },
     showActionSheet (e) {
       // let { formId } = e.mp.detail
       // collectFormID({form_id: formId})
@@ -175,7 +192,7 @@ export default new BasePlatPage({
     async getOrderDetail (id) {
       const res = await getOrderByID({id})
       if (res.code === 200) {
-        console.log(res.data, '这是活动详情')
+        console.log(res.data, '这是活动详情', new Date(res.data.activity.endDate))
         this.activityData = res.data.activity
         this.info.title = res.data.activity.title
         this.user = res.data.user
@@ -185,6 +202,7 @@ export default new BasePlatPage({
         this.shareList.push(this.user)
         this.checkHasIn()
         this.getSwiperList()
+        console.log(this, this.activityCountDown, ' this.activityCountDown')
         this.activityCountDown(new Date(res.data.activity.endDate).getTime() / 1000)
       }
     },
@@ -241,9 +259,10 @@ export default new BasePlatPage({
       this.showBoxModal = false
     },
     // 倒计时
-    activityCountdown () {
+    activityCountDown (timeStamp) {
+      console.log(timeStamp, 'timeStamp')
       countdown(
-        this.timeStamp,
+        timeStamp,
         () => {
           this.activity_status = 0
         },
@@ -259,8 +278,19 @@ export default new BasePlatPage({
     },
     // 下拉刷新
     onRefresh () {
-      this.getBargainActivityInfo(this.trade_no)
+      console.log('下拉刷新number')
+      this.getOrderDetail(this.orderNum)
     }
+  },
+  // 分享
+  onShareAppMessage () {
+    let text = this.cutText[Math.round(Math.random() * 3)]
+    return {
+      title: text,
+      path: '/pages/share/main?orderNum=' + this.orderNum,
+      imageUrl: this.pictureArray[0]
+    }
+    // path: '/pages/groupInfo/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
   },
 
   onShow () {
@@ -274,14 +304,18 @@ export default new BasePlatPage({
 
   onLoad (params) {
     // 分享给好友或者朋友圈
-    if (params.trade_no) {
-      this.trade_no = params.trade_no
-      this.getBargainActivityInfo(this.trade_no)
-    }
-    // 小程序扫码进入
-    if (params.scene) {
-      let mainId = decodeURIComponent(params.scene).split('_')[2]
-      this.getBargainActivityInfo(mainId)
+    // if (params.trade_no) {
+    //   this.trade_no = params.trade_no
+    //   this.getBargainActivityInfo(this.trade_no)
+    // }
+    // // 小程序扫码进入
+    // if (params.scene) {
+    //   let mainId = decodeURIComponent(params.scene).split('_')[2]
+    //   this.getBargainActivityInfo(mainId)
+    // }
+    if (params.orderNum) {
+      this.orderNum = params.orderNum
+      this.getOrderDetail(this.orderNum)
     }
   },
 
@@ -300,8 +334,9 @@ page {
 .container {
   background: url("http://static.ledouya.com/FrC5SW71Gbp2Hx5Dy-jSBc3PQnr6")
     no-repeat;
-  background-size: 100%;
+  background-size: 100% 100%;
   padding-top: 30rpx;
+  overflow: auto;
 }
 
 .user-box {
