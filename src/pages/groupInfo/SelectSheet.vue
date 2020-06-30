@@ -57,7 +57,7 @@ export default new BaseComponent({
   },
   onLoad () {},
   onUnload () {
-    this.$refs.poster.closePoster()
+    // this.$refs.poster.closePoster()
   }
 })
 </script>

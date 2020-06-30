@@ -6,7 +6,7 @@
             </div>
             <!--商品信息-->
             <div class="product-info flex">
-                <img class="product-img" v-if="pictureArray.lenth >0" :src="pictureArray[0]" alt="">
+                <img class="product-img" v-if="pictureArray.length> 0" :src="pictureArray[0]" alt="">
                 <div class="product-text flex">
                     <div class="name line-clamp-2">{{activityData.title}}</div>
                     <!-- <div class="sku line-clamp-1" ><span > {{property}} </span>数量：{{groupInfo.product_quantity}}</div> -->
@@ -52,7 +52,7 @@
                     <div class="people-number">
                         <span>{{activityData.teamCount}}</span>
                         <div>人成团，还差</div>
-                        <span>{{activityData.teamCount - shareList.length}}</span>
+                        <span>{{people_dis}}</span>
                         <div>人</div>
                     </div>
                 </div>
@@ -61,10 +61,10 @@
                         <img class="avatar" :src="user.avatarUrl" alt="">
                         <div class="special" v-if="user.is_head==1">团长</div>
                     </div>
-                  <div class="dot" v-if="activityData.teamCount!=0||hasMoreUser">......</div>
-                    <div class="item vacant" v-if="activityData.teamCount!=0">?</div>
+                  <div class="dot" v-if="people_dis!=0||hasMoreUser">......</div>
+                    <div class="item vacant" v-if="people_dis!=0">?</div>
                     <div class="item" v-if="status===1&&hasMoreUser">
-                        <img class="avatar" :src="lastUser.avatar" alt="">
+                        <img class="avatar" :src="lastUser.avatarUrl" alt="">
                         <div class="special" v-if="lastUser.is_head==1">团长</div>
                     </div>
                 </div>
@@ -72,11 +72,11 @@
         </div>
         <!--btn-->
 
-        <div  @click="joinGroup" v-if="status === 0  && is_self == 2 && activityData.teamCount > 0">
+        <div  @click="joinGroup" v-if="status === 0  && is_self == 2 && people_dis > 0">
             <button class="btn" >我要参团</button>
         </div>
-        <div  @click="createGroup" v-if="status === 1 || activityData.teamCount <= 0">
-            <button class="btn"  formType="click">再开一团</button>
+        <div  @click="joinAgain" v-if="status === 1 || people_dis <= 0">
+            <button class="btn"  >再开一团</button>
         </div>
         <div  @click="showActionSheet" v-if="status === 0 && is_self == 1">
             <button class="btn">邀请好友参团</button>
@@ -114,6 +114,7 @@ export default new BasePlatPage({
       },
       data () {
         return {
+          people_dis: 0,
           overdue: false,
           info: {},
           orderNum: '',
@@ -129,6 +130,7 @@ export default new BasePlatPage({
             minute: 0,
             second: 0
           },
+          lastUser: {},
           status: 0,
           is_self: 2, // 1 该用户是团成员, 2 不是
           hasMoreUser: false,
@@ -158,6 +160,15 @@ export default new BasePlatPage({
               hour: h,
               minute: m,
               second: s
+            }
+          })
+        },
+        joinAgain (e) {
+          // 参团跳转到活动商品详情
+          this.$router.push({
+            path: '/pages/detail/main',
+            query: {
+              id: this.activityId
             }
           })
         },
@@ -197,26 +208,30 @@ export default new BasePlatPage({
             this.activityId = res.data.activity.id
             this.user.is_head = 1
             this.shareList.unshift(this.user)
+            this.isEnd(res.data.activity.endDate)
             if (this.activityData.teamCount > this.shareList.length && !this.overdue) {
               // 进行中
               this.status = 0
-            } else if (this.tactivityData.teamCount === this.shareList.length) {
+            } else if (this.activityData.teamCount === this.shareList.length) {
               this.status = 1
             } else if (this.activityData.teamCount > this.shareList.length && this.overdue) {
               this.status = 2
             }
-            if (this.status === 0) { // 进行中
+            this.people_dis = this.activityData.teamCount - this.shareList.length
+
+            this.displayUserList = this.shareList
+    
+            if (this.status === 0 && this.shareList.length > 6) { // 进行中
               this.displayUserList = this.shareList.slice(0, 6)
-            } else if (this.status === 1) { // 成功
+            } else if (this.status === 1 && this.shareList.length > 6) { // 成功
               this.hasMoreUser = true
-              this.shareList = this.shareList[this.userList.length - 1]
+              this.lastUser = this.shareList[this.shareList.length - 1]
               this.displayUserList = this.shareList.slice(0, 6)
             }
             this.checkHasIn()
             this.getSwiperList()
             this.activityCountDown(new Date(res.data.activity.endDate).getTime() / 1000)
             // 判断当前活动是不是过期
-            this.isEnd(res.data.activity.endDate)
           }
         },
         // 判断是否在当前团中

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-overlay :show="show" >
+    <van-overlay :show="show" @click="onClickHide">
       <div class="poper-box">
 
       </div>
@@ -54,6 +54,9 @@ export default {
     this.saveAvatar(this.avatar)
     this.saveCover(this.info.url)
     this.getQr()
+  },
+  onShow () {
+    this.onClickHide()
   },
   methods: {
     async getUesrInfo () {
