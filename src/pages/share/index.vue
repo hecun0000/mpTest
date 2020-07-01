@@ -171,6 +171,7 @@ export default new BasePlatPage({
         console.log(res.data, '这是活动详情', new Date(res.data.activity.endDate))
         this.activityData = res.data.activity
         this.info.title = res.data.activity.title
+        this.info.orderNum = this.orderNum
         this.user = res.data.user
         this.shareList = res.data.shareList
         this.activityId = res.data.activity.id
@@ -255,10 +256,10 @@ export default new BasePlatPage({
   onLoad (params) {
     console.log(params.scene, 'params.sceneparams.sceneparams.scene')
     // // 小程序扫码进入
-    // if (params.scene) {
-    //   let mainId = decodeURIComponent(params.scene).split('_')[2]
-    //   this.getBargainActivityInfo(mainId)
-    // }
+    if (params.scene) {
+      this.orderNum = decodeURIComponent(params.scene)
+      this.getBargainActivityInfo(this.orderNum)
+    }
     if (params.orderNum) {
       this.orderNum = params.orderNum
       this.getOrderDetail(this.orderNum)

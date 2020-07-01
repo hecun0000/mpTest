@@ -77,7 +77,7 @@ export default {
       console.log('eeeeeeeeeeeeeeeeeeeee')
       const res = await getQrCode({
         path: 'page/order/main',
-        scene: '14324432432'
+        scene: this.info.orderNum
       })
       console.log(res, 'resssssssssssssss')
       if (res.code === 200) {

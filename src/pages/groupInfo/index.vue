@@ -203,6 +203,7 @@ export default new BasePlatPage({
             console.log(res.data, '这是活动详情')
             this.activityData = res.data.activity
             this.info.title = res.data.activity.title
+            this.info.orderNum = this.orderNum
             this.user = res.data.user
             this.shareList = res.data.shareList
             this.activityId = res.data.activity.id
@@ -255,8 +256,9 @@ export default new BasePlatPage({
       },
       onLoad (params) {
         this.params = params
+        console.log(params.scene, 'params.sceneparams.sceneparams.scene')
         if (params.scene) {
-          this.orderNum = decodeURIComponent(params.scene).split('_')[2]
+          this.orderNum = decodeURIComponent(params.scene)
           this.getOrderDetail(this.orderNum)
         } else if (params.orderNum) {
           this.orderNum = params.orderNum

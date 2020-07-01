@@ -185,7 +185,7 @@ export default new BasePlatPage({
       const data = {
         openid: wx.getStorageSync('openId'),
         orderName: this.activityData.title.slice(0, 36),
-        price: 0.01,
+        price: this.activityData.activityPrice,
         activityId: this.activityId
       }
       console.log(data, '生成订单参数传递')
