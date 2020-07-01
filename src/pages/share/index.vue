@@ -157,7 +157,7 @@ export default new BasePlatPage({
       let text = this.cutText[Math.round(Math.random() * 2)]
       return {
         title: text,
-        path: '/pages/detail/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
+        path: '/pages/share/main?orderNum=' + this.orderNum + '&id=' + this.activityId,
         imageUrl: this.pictureArray[0]
       }
     },

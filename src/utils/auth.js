@@ -8,6 +8,7 @@ export default class auth {
 
     static async appCheckAuth () {
       return new Promise(function (resolve) {
+        console.log(wx.getStorageSync('openId'), 'openId')
         if (auth.isLiting) {
           resolve(false)
           return

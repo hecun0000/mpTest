@@ -54,6 +54,7 @@
     <div class="save-button">
       <van-button type="primary" @click="handleSave" block>保存</van-button>
     </div>
+    <auth></auth>
   </div>
 </template>
 
@@ -82,15 +83,12 @@ export default new BasePlatPage({
       show: false,
       showoGrade: false,
       actionsGrade: [
-        { name: '一年级' },
-        { name: '二年级' },
-        { name: '三年级' },
-        { name: '四年级' },
-        { name: '五年级' },
-        { name: '六年级' },
         { name: '初一' },
         { name: '初二' },
-        { name: '初三' }
+        { name: '初三' },
+        { name: '高一' },
+        { name: '高二' },
+        { name: '高三' }
       ],
       actions: [
         {
@@ -102,11 +100,13 @@ export default new BasePlatPage({
       ]
     }
   },
+  onLoad () {
+
+  },
   mounted () {
     wx.setNavigationBarTitle({
       title: '个人信息'
     })
-    console.log(11111111111111100000000000000011111111)
     this.getUesrInfo()
   },
   methods: {

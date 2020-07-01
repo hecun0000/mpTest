@@ -102,6 +102,7 @@ export default new BasePlatPage({
   },
   onShow () {
     this.getUesrInfo()
+    this.loading = false
   },
   onLoad (params) {
     wx.setNavigationBarTitle({
@@ -175,12 +176,12 @@ export default new BasePlatPage({
       }
     },
     async pay () {
-      if (this.loading) return
-      this.loading = true
       const resultUserInfo = await this.checkUserInfo()
       console.log('resultUserInfo', resultUserInfo)
       console.log('this.activityId', this.activityId)
       if (!resultUserInfo) return
+      // if (this.loading) return
+      // this.loading = true
       const data = {
         openid: wx.getStorageSync('openId'),
         orderName: this.activityData.title.slice(0, 36),
@@ -200,7 +201,7 @@ export default new BasePlatPage({
           signType,
           paySign,
           success: async function (res) {
-            self.loading = false
+            // self.loading = false
             console.log(res, 'eeeeeeee')
             let orderNum = orderId
             // console.log(orderNum, 'orderNum', self.activityData.type)
