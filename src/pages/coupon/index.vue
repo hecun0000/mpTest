@@ -8,6 +8,8 @@
 --> 
 <template>
   <div class="coupon-list">
+    <template v-if="couponList.length > 0">
+
     <div class="coupon-item" v-for="item in couponList" :key="item">
       <div class="info" @click.stop="toDetail(item)">
             <!-- <img class="img" v-if="item.product_limit_type != 1" src="http://static.ledouya.com/FhonmRNhbZwPeZDlrqA_rosFTGeg" alt=""> 指定图标 -->
@@ -32,6 +34,12 @@
             <!--<div class="text">{{item.origin_receive_num}}人已领</div>-->
         </div>
     </div>
+    </template>
+     <!-- 没有优惠券 -->
+                <div class="no-coupon" v-else>
+                    <img src="./empty-coupon.png"/>
+                    <div class="desc">呜！您暂无可用优惠券~</div>
+                </div>
   </div>
 </template>
 
@@ -41,30 +49,6 @@ export default {
   data () {
     return {
       couponList: [
-        {
-          money: '100',
-          coupon_name: '618年中特惠',
-          start_time: '2020-06-01 21:00:00',
-          end_time: '2020-06-06 21:00:00'
-        },
-        {
-          money: '100',
-          coupon_name: '618年中特惠',
-          start_time: '2020-06-01 21:00:00',
-          end_time: '2020-06-06 21:00:00'
-        },
-        {
-          money: '100',
-          coupon_name: '618年中特惠',
-          start_time: '2020-06-01 21:00:00',
-          end_time: '2020-06-06 21:00:00'
-        },
-        {
-          money: '100',
-          coupon_name: '618年中特惠',
-          start_time: '2020-06-01 21:00:00',
-          end_time: '2020-06-06 21:00:00'
-        }
       ],
       imageURL: 'https://img.yzcdn.cn/upload_files/2017/07/02/af5b9f44deaeb68000d7e4a711160c53.jpg'
     }
@@ -88,7 +72,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
 page {
   background: #fff;
 }
@@ -208,5 +192,19 @@ page {
   font-size: 24rpx;
   padding-top: 14rpx;
 }
-
+.no-coupon{
+    margin-top: 100rpx;
+    image{
+        width: 161rpx;
+        height: 161rpx;
+        margin: 0 auto;
+        opacity: 0.7;
+    }
+    .desc{
+        text-align: center;
+        font-size: 26rpx;
+        color: #999;
+        padding: 30rpx 0 200rpx;
+    }
+}
 </style>

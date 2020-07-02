@@ -206,6 +206,7 @@ export default new BasePlatPage({
           return item
         })
         this.info.url = this.pictureArray[0]
+        this.$refs.share.saveCover(this.info.url)
         console.log(this.pictureArray)
       }
     },

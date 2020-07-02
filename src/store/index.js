@@ -11,9 +11,9 @@ const store = new Vuex.Store({
     version: '',
     newVersion: 'v2.0.0', // 当前最新版本
     // api域名
-    baseURL: 'http://39.97.251.196:8888/',
+    baseURL: 'https://mp.hecun.site/',
     // baseURL: 'https://api.store.ledianyun.com/',
-    domain: 'http://39.97.251.196:8888/',
+    domain: 'https://mp.hecun.site/',
     // domain: 'https://api.ledianyun.com/',
     // 用户信息
     checkTime: {},

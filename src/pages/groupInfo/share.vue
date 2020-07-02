@@ -48,12 +48,11 @@ export default {
     this.windowWidth = res.windowWidth
     this.windowHeight = res.windowHeight
     this.dpr = wx.getSystemInfoSync().pixelRatio
-    console.log(this.dpr, 'this.dpr')
-    // this.init()
+    console.log(this.dpr, 'this.dpr', this.info)
     await this.getUesrInfo()
     this.saveAvatar(this.avatar)
-    this.saveCover(this.info.url)
     this.getQr()
+    // this.init()
   },
   onShow () {
     this.onClickHide()
@@ -142,6 +141,7 @@ export default {
       wx.downloadFile({
         url,
         success: res => {
+          console.log(res.tempFilePath, 'res.tempFilePath')
           this.coverFilePath = res.tempFilePath
         }
       })

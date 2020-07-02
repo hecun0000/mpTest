@@ -1,20 +1,24 @@
 <template>
   <div class="list-page">
-    <ul class="list">
-      <li class="item" v-for="(item, index) in listData" :key="index" @click="jumpTo(item)">
-        <img src="http://static.hecun.site/hecun159210240836740.png" class="cover" alt srcset />
+    <ul class="list" v-if="listData.length > 0">
+      <li class="item" v-for="(item, index) in listData" :key="index">
+        <img :src="item.headImg" class="cover" alt srcset />
         <p class="title">{{ item.title }}</p>
         <div class="content">
-          <van-button plain hairline type="info" size="small" @click.stop="toDetail">查看详情</van-button>
+          <van-button plain hairline type="info" size="small" @click.stop="toDetail(item)">查看详情</van-button>
         </div>
       </li>
     </ul>
+    <div class="no-data" v-else>
+      <img src="./no-bill.png" mode="aspectFit" class="empty-img"/>
+      <div class="text">您还没有相关活动</div>
+    </div>
   </div>
 </template>
 
 <script>
 import card from '@/components/card'
-import { getAtivity } from '@/api/activity'
+import { getOrderList } from '@/api/order'
 
 export default {
   data () {
@@ -29,16 +33,21 @@ export default {
 
   methods: {
     async getList () {
-      const res = await getAtivity()
+      const data = {
+        userId: wx.getStorageSync('openId')
+      }
+      const res = await getOrderList(data)
+      this.listData = []
       if (res.code === 200) {
         this.listData = res.data
       }
     },
     jumpTo ({id}) {
-      wx.navigateTo({url: '/pages/detail/main?id=' + id})
+      // wx.navigateTo({url: '/pages/detail/main?id=' + id})
     },
-    toDetail () {
-      wx.navigateTo({url: '/pages/share/main'})
+    toDetail (item) {
+      const url = item.type === 'group' ? '/pages/groupInfo/main' : '/pages/share/main'
+      wx.navigateTo({url: url + '?orderNum=' + item.id})
     }
   },
   mounted () {
@@ -81,4 +90,16 @@ export default {
   text-align: right;
   padding: 18rpx 0 0;
 }
+ .no-data{
+        margin-top: 100rpx;
+        text-align: center;
+        color: #999;
+        font-size: 24rpx;
+        .empty-img {
+            margin: 0 auto 10rpx;
+            width: 161rpx;
+            height: 161rpx;;
+
+        }
+    }
 </style>

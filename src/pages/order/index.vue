@@ -8,12 +8,7 @@
 --> 
 <template>
   <div class="order-list">
-    <!-- <van-tabs sticky>
-      <van-tab title="全部"></van-tab>
-      <van-tab title="已付款"></van-tab>
-      <van-tab title="已取消"></van-tab>
-    </van-tabs> -->
-    <div>
+    <div  v-if="list.length>0">
       <div class="order-item" v-for="(item, index) in list" :key="index">
         <van-card
           custom-class="yes-tag"
@@ -25,6 +20,10 @@
           :thumb="item.activity.headImg"
         ></van-card>
       </div>
+    </div>
+    <div class="no-data" v-else>
+      <img src="./no-bill.png" mode="aspectFit" class="empty-img"/>
+      <div class="text">您还没有相关订单</div>
     </div>
         <Auth></Auth>
   </div>
@@ -40,7 +39,7 @@ export default new BasePlatPage({
   },
   data () {
     return {
-      list: [''],
+      list: [],
       imageURL:
         'https://img.yzcdn.cn/upload_files/2017/07/02/af5b9f44deaeb68000d7e4a711160c53.jpg'
     }
@@ -49,7 +48,7 @@ export default new BasePlatPage({
     wx.setNavigationBarTitle({
       title: '我的订单'
     })
-    this.getList()
+    // this.getList()
   },
   methods: {
     async getList () {
@@ -67,7 +66,7 @@ export default new BasePlatPage({
 })
 </script>
 
-<style>
+<style lang="less" scoped>
 .order-list .no-tag .van-tag {
   background: #6c6c6c;
 }
@@ -76,4 +75,16 @@ export default new BasePlatPage({
   background: #fff;
   margin: 10rpx 0;
 }
+   .no-data{
+        margin-top: 100rpx;
+        text-align: center;
+        color: #999;
+        font-size: 24rpx;
+        .empty-img {
+            margin: 0 auto 10rpx;
+            width: 161rpx;
+            height: 161rpx;;
+
+        }
+    }
 </style>
