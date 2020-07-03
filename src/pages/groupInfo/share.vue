@@ -27,6 +27,7 @@ export default {
   },
   data () {
     return {
+      avatarFilePath: '',
       qrFilePath: '',
       coverFilePath: '',
       textFinalTop: 0,
@@ -87,10 +88,19 @@ export default {
       }
     },
     onClickShow () {
-      this.show = true
-      setTimeout(_ => {
-        this.init()
-      }, 500)
+      console.log(this.coverFilePath, 'this.coverFilePath', this.qrFilePath, this.avatarFilePath)
+      if (this.avatarFilePath && this.qrFilePath && this.coverFilePath) {
+        this.show = true
+        setTimeout(_ => {
+          this.init()
+        }, 500)
+      } else {
+        wx.showToast({
+          title: '正在生成中...',
+          icon: 'loading',
+          duration: 2000
+        })
+      }
     },
     onClickHide () {
       this.show = false
@@ -100,7 +110,7 @@ export default {
       const query = wx.createSelectorQuery()
       query.select('#ctx')
         .fields({ node: true, size: true })
-        .exec((res) => {
+        .exec(async (res) => {
           const canvas = res[0].node
           // 新接口需显示设置画布宽高；
           self.dpr = wx.getSystemInfoSync().pixelRatio
@@ -114,21 +124,24 @@ export default {
           const ctx = canvas.getContext('2d')
           ctx.fillStyle = '#ffffff'
           ctx.fillRect(0, 0, width, height)
-          self.drawImg(ctx, canvas)
-          self.drawTitle(ctx)
-          self.drawQR(ctx, canvas)
-          self.drawAvatar(ctx, canvas)
           self.drawnNickname(ctx)
+          self.drawTitle(ctx)
+          await self.drawImg(ctx, canvas)
+          await self.drawQR(ctx, canvas)
+          await self.drawAvatar(ctx, canvas)
         })
     },
     drawImg (ctx, canvas) {
-      console.log(this.coverFilePath, ' this.coverFilePath')
-      let img = canvas.createImage()
-      img.onload = e => {
-        const padding = 20
-        ctx.drawImage(img, padding, padding, this.width - padding * this.dpr, this.width - padding * this.dpr)
-      }
-      img.src = this.coverFilePath
+      return new Promise((resolve) => {
+        console.log(this.coverFilePath, ' this.coverFilePath')
+        let img = canvas.createImage()
+        img.src = this.coverFilePath
+        img.onload = e => {
+          const padding = 20
+          ctx.drawImage(img, padding, padding, this.width - padding * this.dpr, this.width - padding * this.dpr)
+          resolve()
+        }
+      })
     },
     saveAvatar (url) {
       wx.downloadFile({
@@ -156,29 +169,35 @@ export default {
       })
     },
     drawAvatar (ctx, canvas) {
-      let img = canvas.createImage()
-      img.onload = e => {
-        const padding = 10
-        ctx.save()
-        ctx.beginPath()
-        const aWidth = 40 * this.dpr
-        ctx.arc(padding * this.dpr + aWidth / 2, this.height - padding * this.dpr - aWidth / 2, aWidth / 2, 0, Math.PI * 2, false)
-        ctx.clip()
-        ctx.drawImage(img, padding * this.dpr, this.height - padding * this.dpr - aWidth, aWidth, aWidth)
-      }
-      img.src = this.avatarFilePath
+      return new Promise(resolve => {
+        let img = canvas.createImage()
+        img.src = this.avatarFilePath
+        img.onload = e => {
+          const padding = 10
+          ctx.save()
+          ctx.beginPath()
+          const aWidth = 40 * this.dpr
+          ctx.arc(padding * this.dpr + aWidth / 2, this.height - padding * this.dpr - aWidth / 2, aWidth / 2, 0, Math.PI * 2, false)
+          ctx.clip()
+          ctx.drawImage(img, padding * this.dpr, this.height - padding * this.dpr - aWidth, aWidth, aWidth)
+          resolve()
+        }
+      })
     },
     drawQR (ctx, canvas) {
-      let img = canvas.createImage()
-      img.onload = e => {
-        const padding = 10
-        ctx.save()
-        ctx.beginPath()
-        // ctx.clip()
-        const qrWidth = 60 * this.dpr
-        ctx.drawImage(img, this.width - padding * this.dpr - qrWidth, this.height - padding * this.dpr - qrWidth, qrWidth, qrWidth)
-      }
-      img.src = this.qrFilePath
+      return new Promise(resolve => {
+        let img = canvas.createImage()
+        img.src = this.qrFilePath
+        img.onload = e => {
+          const padding = 10
+          ctx.save()
+          ctx.beginPath()
+          // ctx.clip()
+          const qrWidth = 60 * this.dpr
+          ctx.drawImage(img, this.width - padding * this.dpr - qrWidth, this.height - padding * this.dpr - qrWidth, qrWidth, qrWidth)
+          resolve()
+        }
+      })
     },
     drawTitle (ctx) {
       const fontSize = 14 * this.dpr

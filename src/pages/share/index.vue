@@ -260,7 +260,8 @@ export default new BasePlatPage({
     // // 小程序扫码进入
     if (params.scene) {
       this.orderNum = decodeURIComponent(params.scene)
-      this.getBargainActivityInfo(this.orderNum)
+      console.log(this.orderNum)
+      this.getOrderDetail(this.orderNum)
     }
     if (params.orderNum) {
       this.orderNum = params.orderNum
