@@ -76,10 +76,10 @@ export default new BaseComponent({
         this.checkUserAuth()
       },
       onShow () {
-        let authInfo = wx.getStorageSync('authInfo')
-        if (authInfo && authInfo.token) {
-          this.showAuthModal = false
-        }
+        // let authInfo = wx.getStorageSync('authInfo')
+        // if (authInfo && authInfo.token) {
+        //   this.showAuthModal = false
+        // }
       }
     })
 </script>

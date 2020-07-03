@@ -171,6 +171,7 @@ export default new BasePlatPage({
         console.log(res.data, '这是活动详情', new Date(res.data.activity.endDate))
         this.activityData = res.data.activity
         this.info.title = res.data.activity.title
+        this.info.type = res.data.activity.type
         this.info.orderNum = this.orderNum
         this.user = res.data.user
         this.shareList = res.data.shareList

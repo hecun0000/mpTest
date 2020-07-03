@@ -9,15 +9,15 @@ export default class auth {
     static async appCheckAuth () {
       return new Promise(function (resolve) {
         console.log(wx.getStorageSync('openId'), 'openId')
-        if (auth.isLiting) {
-          resolve(false)
-          return
-        }
-        if (auth.checkAuth()) {
-          auth.isLiting = false
-          resolve(true)
-          return
-        }
+        // if (auth.isLiting) {
+        //   resolve(false)
+        //   return
+        // }
+        // if (auth.checkAuth()) {
+        //   auth.isLiting = false
+        //   resolve(true)
+        //   return
+        // }
         auth.isLiting = true
         wx.showLoading({
           title: '加载中...',

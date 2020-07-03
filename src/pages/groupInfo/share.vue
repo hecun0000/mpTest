@@ -74,8 +74,9 @@ export default {
     },
     async getQr () {
       console.log('eeeeeeeeeeeeeeeeeeeee')
+      const url = this.info.type === 'group' ? '/pages/groupInfo/main' : '/pages/share/main'
       const res = await getQrCode({
-        path: 'page/order/main',
+        path: url,
         scene: this.info.orderNum
       })
       console.log(res, 'resssssssssssssss')
