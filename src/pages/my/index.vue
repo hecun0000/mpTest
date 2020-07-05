@@ -22,13 +22,13 @@
     </div>
     <div class="container-my">
       <ul class="list">
-        <li class="list-box">
+        <!-- <li class="list-box">
           <span class="icon order"></span>
           <div class="list-item" @click="jumpTo('/pages/order/main')">
             我的订单
             <span class="icon more" />
           </div>
-        </li>
+        </li> -->
         <li class="list-box">
           <span class="icon coupon"></span>
           <div class="list-item" @click="jumpTo('/pages/coupon/main')">
