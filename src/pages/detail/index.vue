@@ -59,10 +59,12 @@
         <!-- <h-dialog ref="dialog"/> -->
         <Auth></Auth>
         <van-dialog id="van-dialog" />
+        <van-notify id="van-notify" />
     </div>
 </template>
 
 <script>
+import Notify from '../../../static/vant/notify/notify'
 import wxParse from 'ldy-mpvue-wxparse'
 import ProductFooter from './ProductFooter'
 import ProductPingJia from './ProductPingJia'
@@ -233,6 +235,8 @@ export default new BasePlatPage({
           },
           fail (res) { }
         })
+      } else {
+        Notify({ type: 'warning', message: '您已参加过该活动' })
       }
     },
     async addOrder () {

@@ -45,6 +45,7 @@
     "position": "bottom"
   },
   "usingComponents": {
+    "van-notify": "/static/vant/notify/index",
     "van-dialog": "/static/vant/dialog/index",
     "van-overlay": "/static/vant/overlay/index",
     "van-count-down": "/static/vant/count-down/index",

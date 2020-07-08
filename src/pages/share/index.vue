@@ -36,7 +36,7 @@
       <button class="btn" v-if="!isMy" :class="{'btn-gray':overdue || is_self === 1}"  @click="handAdd">
         {{ is_self === 1 ? "已经助力过": "为好友助力" }}
       </button>
-      <button class="btn" :class="{'btn-gray':overdue}" @click="handleSend">我要发起助力</button>
+      <button class="btn" v-if="!isMy" :class="{'btn-gray':overdue}" @click="handleSend">我要发起助力</button>
     </block>
     <!--帮砍榜-->
     <div class="rate-box">
